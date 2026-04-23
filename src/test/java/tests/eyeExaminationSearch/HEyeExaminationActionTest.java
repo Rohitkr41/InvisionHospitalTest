@@ -34,7 +34,7 @@ public class HEyeExaminationActionTest extends BaseTest{
     public void testAdvanceSearchAndClickPlus() {
 
         // SEARCH USING DATE FILTER
-        page.searchByDate("13-03-2026", "15-03-2026");
+        page.searchByDate("14-04-2026", "15-04-2026");
 
         // CLICK FIRST ROW PLUS ICON
         page.clickFirstRowPlusIcon();
