@@ -3,14 +3,14 @@
 <suite name="Failed suite [Default suite]" guice-stage="DEVELOPMENT">
   <test thread-count="5" name="Default test(failed)">
     <classes>
-      <class name="tests.eyeExaminationSearch.HComplaintOcularTest">
+      <class name="tests.billing.HBillingReceiptTest">
         <methods>
           <include name="setUp"/>
           <include name="tearDown"/>
-          <include name="testComplaintAndOcularHistory"/>
+          <include name="approvePendingDiscountUsingDateFilter"/>
           <include name="setupPage"/>
         </methods>
-      </class> <!-- tests.eyeExaminationSearch.HComplaintOcularTest -->
+      </class> <!-- tests.billing.HBillingReceiptTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->
