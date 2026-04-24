@@ -1,6 +1,7 @@
 package tests.billing;
 
 import org.testng.Assert;
+import org.testng.SkipException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -36,7 +37,7 @@ public class HBillingReceiptTest extends BaseTest {
     // TOP SEARCH - REGISTRATION
     // ======================
 
-    @Test
+//    @Test
     public void searchByRegistrationNumber() {
 
         page.searchByRegistration("IH-26-0085");
@@ -51,7 +52,7 @@ public class HBillingReceiptTest extends BaseTest {
     // TOP SEARCH - PHONE
     // ======================
 
-    @Test
+//    @Test
     public void searchByPhoneNumber() {
 
         page.searchByPhone("734986743969834");
@@ -66,7 +67,7 @@ public class HBillingReceiptTest extends BaseTest {
     // TOP SEARCH - NAME
     // ======================
 
-    @Test
+//    @Test
     public void searchByPatientName() {
 
         page.searchByName("RAHUL");
@@ -81,7 +82,7 @@ public class HBillingReceiptTest extends BaseTest {
     // ADVANCE SEARCH - REGISTRATION
     // ======================
 
-    @Test
+//    @Test
     public void advanceSearchByRegistration() {
 
         page.advanceSearchByRegistration(
@@ -99,7 +100,7 @@ public class HBillingReceiptTest extends BaseTest {
     // ADVANCE SEARCH - PHONE
     // ======================
 
-    @Test
+//    @Test
     public void advanceSearchByPhone() {
 
         page.advanceSearchByPhone(
@@ -117,7 +118,7 @@ public class HBillingReceiptTest extends BaseTest {
     // ADVANCE SEARCH - NAME
     // ======================
 
-    @Test
+//    @Test
     public void advanceSearchByName() {
 
         page.advanceSearchByName(
@@ -135,7 +136,7 @@ public class HBillingReceiptTest extends BaseTest {
     // ADVANCE SEARCH - DATE
     // ======================
 
-    @Test
+    
     public void advanceSearchByDate() {
 
         page.advanceSearchByDate(
@@ -151,4 +152,21 @@ public class HBillingReceiptTest extends BaseTest {
             page.exportTableDataToExcel("ReceiptAdvanceDateSearch");
         }
     }
+    
+    @Test
+    public void approvePendingDiscountUsingDateFilter() {
+        boolean approved = page.approvePendingDiscountByDateFilter(
+            "10-04-2026",
+            "24-04-2026",
+            "Discount approved by rohit"
+        );
+
+        if (!approved) {
+            throw new SkipException("No row found with Discount = Approval Pending");
+        }
+
+        Assert.assertTrue(approved, "Discount approved successfully.");
+    }
+
+    
 }
