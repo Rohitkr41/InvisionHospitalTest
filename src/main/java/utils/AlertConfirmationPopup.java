@@ -18,14 +18,25 @@ public class AlertConfirmationPopup {
    public String handlePopupFast() {
     String message = "";
 
+//    By alertMessage = By.xpath(
+//    	    "//div[contains(@class,'alert') and not(contains(@style,'display: none'))] | " +
+//    	    "//div[contains(@class,'swal2-popup')] | " +
+//    	    "//p[contains(text(),'successfully') or contains(text(),'updated successfully') or contains(text(),'exist') or contains(text(),'sure')] | " +
+//    	    "//p[contains(text(),'updated successfully!')] | " +
+//    	    "//div[contains(@class,'alert-body')]//p[contains(text(),'No records found')] | " +
+//    	    "//p[contains(text(),'Patient Registered successfully')]"
+//    	);
+    
     By alertMessage = By.xpath(
-    	    "//div[contains(@class,'alert') and not(contains(@style,'display: none'))] | " +
-    	    "//div[contains(@class,'swal2-popup')] | " +
-    	    "//p[contains(text(),'successfully') or contains(text(),'updated successfully') or contains(text(),'exist') or contains(text(),'sure')] | " +
-    	    "//p[contains(text(),'updated successfully!')] | " +
-    	    "//div[contains(@class,'alert-body')]//p[contains(text(),'No records found')] | " +
-    	    "//p[contains(text(),'Patient Registered successfully')]"
-    	);
+            "//div[contains(@class,'alert') and not(contains(@style,'display: none'))] | " +
+            "//div[contains(@class,'swal2-popup')] | " +
+            "//div[contains(@class,'alert-body')]//p[contains(normalize-space(),'Ocular Motility saved successfully')] | " +
+            "//div[contains(@class,'alert-body')]//p[contains(normalize-space(),'Ocular Motility already exist')] | " +
+            "//p[contains(text(),'successfully') or contains(text(),'updated successfully') or contains(text(),'exist') or contains(text(),'sure')] | " +
+            "//p[contains(text(),'updated successfully!')] | " +
+            "//div[contains(@class,'alert-body')]//p[contains(text(),'No records found')] | " +
+            "//p[contains(text(),'Patient Registered successfully')]"
+    );
 
 //    By okButtons = By.xpath("//button[normalize-space()='OK' or normalize-space()='Ok' |" +
 //    "//div[contains(@class,'alert-btn')]//button[normalize-space()='OK']");

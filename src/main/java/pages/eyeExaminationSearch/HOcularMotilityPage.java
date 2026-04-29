@@ -1,9 +1,12 @@
+
+
 package pages.eyeExaminationSearch;
 
 import java.time.Duration;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,48 +20,28 @@ public class HOcularMotilityPage extends BasePage {
         super(driver);
     }
 
-    // =============================
-    // LEFT MENU
-    // =============================
-
     By ocularMenu = By.xpath("//*[@id='side-box-nav']/li[5]");
 
-    // =============================
-    // OCULAR MOTILITY FORM
-    // =============================
-
-    By ocularMotilityField = By.xpath("//label[contains(text(),'Ocular Motility')]/following::input[1]");
+    By ocularMotilityField = By.xpath("(//input[@data-dropdown='complaintDropdown'])[1]");
     By movementDropdown = By.xpath("//label[contains(text(),'Movement')]/following::select[1]");
     By remarksField = By.xpath("//label[contains(text(),'Remarks')]/following::input[1]");
     By saveOcularMotilityBtn = By.xpath("//button[contains(text(),'Save Ocular Motility')]");
-    By savedRow = By.xpath("//td[contains(text(),'EXOTROPIA')]");
-
-    // =============================
-    // EXAMINATION SECTION
-    // =============================
 
     By setNormalValueCheckbox = By.id("flexCheckChecked");
-    By saveOcularExaminationBtn = By.xpath("(//*[@id=\"RM_btnSubmit\"])[2]");
+    By saveOcularExaminationBtn = By.xpath("(//*[@id='RM_btnSubmit'])[2]");
 
-    // =============================
-    // ALERT
-    // =============================
-
-    By alertMessage = By.xpath("//*[contains(text(),'Ocular Motility already exist')]");
-    By alertOkBtn = By.xpath("(//*[@id='main']//div[2]/button)[1]");
+    // ✅ FIXED ALERT LOCATORS
     By modal = By.cssSelector(".custom-modal");
-
-    // =============================
-    // CLICK OCULAR MENU
-    // =============================
+    By alertText = By.cssSelector(".modal-body.alert-body p");
+    By okButton = By.xpath("(//div[contains(@class,'alert-body')]//button[normalize-space()='OK'])[3]");
+    
+    By Torchlight = By.xpath("//span[text()='Torchlight']");
+    By SlitLamp = By.xpath("//span[text()='SlitLamp']");
+    
 
     public void clickOcularMenu() {
         wait.until(ExpectedConditions.elementToBeClickable(ocularMenu)).click();
     }
-
-    // =============================
-    // ADD OCULAR MOTILITY
-    // =============================
 
     public void addOcularMotility() {
 
@@ -69,100 +52,107 @@ public class HOcularMotilityPage extends BasePage {
         ocular.sendKeys("EXOTROPIA");
 
         By suggestion = By.xpath("//*[text()='Exotropia']");
-
-        WebElement option = wait.until(
-                ExpectedConditions.elementToBeClickable(suggestion));
-
-        option.click();
+        wait.until(ExpectedConditions.elementToBeClickable(suggestion)).click();
 
         WebElement movement = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(movementDropdown));
-
         movement.sendKeys("Full");
 
         driver.findElement(remarksField).sendKeys("Eye movement normal");
 
         wait.until(ExpectedConditions.elementToBeClickable(saveOcularMotilityBtn)).click();
 
-        // handle alert if exists
-        handleAlertIfPresent();
+        // 🔥 MUST HANDLE POPUP
+        handleModalUntilGone();
     }
 
-    // =============================
-    // HANDLE ALERT
-    // =============================
+    // ✅ FINAL MODAL HANDLER (MOST IMPORTANT)
+    public void handleModalUntilGone() {
 
-    public void handleAlertIfPresent() {
-    try {
-        // 1 second max wait for alert
-        WebElement alert = new WebDriverWait(driver, Duration.ofSeconds(1))
-                .until(ExpectedConditions.presenceOfElementLocated(alertMessage));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        if (alert.isDisplayed()) {
-            WebElement ok = driver.findElement(alertOkBtn);
-            ok.click();
+        for (int i = 0; i < 3; i++) { // handle multiple popups
+            try {
+                WebElement modalElement = wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(modal));
 
-            // wait modal disappear quickly
-            new WebDriverWait(driver, Duration.ofSeconds(2))
-                    .until(ExpectedConditions.invisibilityOfElementLocated(modal));
+                // print message
+                try {
+                    WebElement msg = driver.findElement(alertText);
+                    System.out.println("Alert: " + msg.getText());
+                } catch (Exception ignored) {}
+
+                WebElement okBtn = wait.until(
+                        ExpectedConditions.elementToBeClickable(okButton));
+
+                try {
+                    okBtn.click();
+                } catch (Exception e) {
+                    ((JavascriptExecutor) driver)
+                            .executeScript("arguments[0].click();", okBtn);
+                }
+
+                wait.until(ExpectedConditions.invisibilityOf(modalElement));
+
+            } catch (TimeoutException e) {
+                break;
+            }
         }
-
-    } catch (Exception e) {
-        // no alert — skip
     }
-}
 
-// =============================
-// CLICK SET NORMAL VALUE (with wait before click)
-// =============================
-public void clickSetNormalValue() {
-	
-    handleAlertIfPresent(); // ensure modal closed
-
-    // wait until label is clickable
-    WebElement label = wait.until(ExpectedConditions.elementToBeClickable(setNormalValueCheckbox));
-
-    try {
-        label.click(); // click visible label instead of hidden input
-    } catch (Exception e) {
-        // fallback to JS click
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", label);
+    // ✅ ENSURE NO OVERLAY BEFORE ACTION
+    public void waitForNoOverlay() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.invisibilityOfElementLocated(modal));
     }
-}
-    // =============================
-// SAVE OCULAR EXAMINATION (with success alert handling)
-// =============================
-public void saveOcularExamination() {
+    
+    public void clickExaminationRadioBtn() {
+    	 handleModalUntilGone(); // 🔥 MUST
+         waitForNoOverlay();
 
-    handleAlertIfPresent(); // close any existing error alert
+         WebElement clickRadioBtn = wait.until(
+                 ExpectedConditions.elementToBeClickable(Torchlight));
 
-    WebElement saveBtn = wait.until(
-            ExpectedConditions.elementToBeClickable(saveOcularExaminationBtn));
+         try {
+        	 clickRadioBtn.click();
+         } catch (Exception e) {
+             ((JavascriptExecutor) driver)
+                     .executeScript("arguments[0].click();", clickRadioBtn);
+         }
+    }
 
-    saveBtn.click();
+    public void clickSetNormalValue() {
 
-    // =============================
-    // HANDLE SUCCESS ALERT
-    // =============================
-    try {
-        // wait briefly for success alert to appear (max 3s)
-        By successAlert = By.xpath("//*[contains(text(),'Ocular examination updated successfully')]");
-        WebElement alert = new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOfElementLocated(successAlert));
+        handleModalUntilGone(); // 🔥 safety
+        waitForNoOverlay();
 
-        if (alert.isDisplayed()) {
-            // find OK button in the modal
-            WebElement okBtn = driver.findElement(By.xpath("(//*[@id='main']//div[2]/button)[1]"));
-            okBtn.click();
+        WebElement checkbox = wait.until(
+                ExpectedConditions.elementToBeClickable(setNormalValueCheckbox));
 
-            // wait for modal to disappear
-            new WebDriverWait(driver, Duration.ofSeconds(2))
-                    .until(ExpectedConditions.invisibilityOfElementLocated(modal));
+        try {
+            checkbox.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].click();", checkbox);
         }
-
-    } catch (Exception e) {
-        // success alert not present — skip
     }
+
+    public void saveOcularExamination() {
+
+        handleModalUntilGone(); // 🔥 MUST
+        waitForNoOverlay();
+
+        WebElement saveBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(saveOcularExaminationBtn));
+
+        try {
+            saveBtn.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].click();", saveBtn);
+        }
+        System.out.println("test change");
+    }
+   
 }
-}
+
