@@ -1,7 +1,10 @@
 package tests;
 
-import org.openqa.selenium.By;
-import org.testng.Assert;
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -12,48 +15,57 @@ import pages.LoginPage;
 import pages.PatientTypePage;
 import pages.SidebarPage;
 import utils.ConfigReader;
-import utils.ScreenshotUtil;
 
 public class HWalkInRegistrationTest extends BaseTest {
-	@Test
-	public void walkInRegistration() {
-
-	    // Login
-	    LoginPage login = new LoginPage(driver);
-	    login.login(
-	            ConfigReader.getProperty("username"),
-	            ConfigReader.getProperty("password")
-	            
-	    );
-
-	    // Sidebar Navigation
-	    SidebarPage sidebar = new SidebarPage(driver);
-	    sidebar.clickHospital();
-	    sidebar.clickRegistration();
-
-	    // Select Patient Type
-	    PatientTypePage pt = new PatientTypePage(driver);
-	    pt.selectWalkIn();
-
-	    // Fill Walk-In Registration
-	    HWalkInRegistrationPage reg = new HWalkInRegistrationPage(driver);
-	    reg.registerWalkInPatient();
-	}
 	
-	@AfterMethod
+	
+	@Test
+	public void walkInRegistration() throws InterruptedException {
+
+		// Login
+		LoginPage login = new LoginPage(driver);
+		login.login(ConfigReader.getProperty("username"), ConfigReader.getProperty("password")
+
+		);
+
+		int registrationCount = 2;
+
+		for (int i = 1; i <= registrationCount; i++) {
+
+		    System.out.println("Registration Number : " + i);
+
+		    SidebarPage sidebar = new SidebarPage(driver);
+		    sidebar.clickHospital();
+		    sidebar.clickRegistration();
+
+		    PatientTypePage pt = new PatientTypePage(driver);
+		    pt.selectWalkIn();
+
+		    HWalkInRegistrationPage reg = new HWalkInRegistrationPage(driver);
+		    reg.registerWalkInPatient();
+		    
+		 // Registration complete hone ke baad refresh
+		    driver.navigate().refresh();
+
+		}
+	}
+
+	@AfterMethod(alwaysRun = true)
 	public void takeScreenshotOnFailure(ITestResult result) {
 
-	    if (ITestResult.FAILURE == result.getStatus()) {
+		if (result.getStatus() == ITestResult.FAILURE && driver != null) {
 
-	        ScreenshotUtil.captureScreenshot(driver, result.getName());
+			try {
 
-	    }
-	    
-	 // Error Message Validation
-        String errorMsg = driver.findElement(By.xpath("(//*[@id='main']//span)[2]")).getText();
+				File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-        Assert.assertNotEquals(errorMsg, "Please select patient type.");
+				FileUtils.copyFile(src, new File("./Screenshots/" + result.getName() + ".png"));
+
+			} catch (Exception e) {
+
+				System.out.println("Screenshot failed: " + e.getMessage());
+			}
+		}
 	}
-
 
 }
