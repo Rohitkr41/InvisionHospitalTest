@@ -7,135 +7,144 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-
+import utils.IndianFakerData;
 import utils.AlertConfirmationPopup;
 
-public class HWalkInRegistrationPage extends BasePage{
-	
+public class HWalkInRegistrationPage extends BasePage {
+
 	AlertConfirmationPopup popup;
-    public HWalkInRegistrationPage(WebDriver driver) {
-        super(driver);
-        popup = new AlertConfirmationPopup(driver);
-    }
 
-    // Basic Details
+	public HWalkInRegistrationPage(WebDriver driver) {
+		super(driver);
+		popup = new AlertConfirmationPopup(driver);
+	}
 
-    By firstName = By.xpath("//*[@id='R_txtFirstName']/input");
-    By lastName = By.xpath("//*[@id='main']//div[4]//input");
+	// Basic Details
 
-    By genderMale = By.xpath("//*[@id='R_rdoGender']/div/div[1]/label");
+	By firstName = By.xpath("//*[@id='R_txtFirstName']/input");
+	By lastName = By.xpath("//*[@id='main']//div[4]//input");
 
-    By dob = By.xpath("//*[@id='main']//form//div[6]//input");
+	By genderMale = By.xpath("//*[@id='R_rdoGender']/div/div[1]/label");
 
-    By nextOfKin = By.xpath("//*[@id='main']//form//div[8]//input");
-    By phoneNumber = By.id("phoneNumberInput");
+	By dob = By.xpath("//*[@id='main']//form//div[6]//input");
 
-    // Occupation Dropdown
-    By occupationDropdown = By.id("RM_ddlCategory");
+	By nextOfKin = By.xpath("//*[@id='main']//form//div[8]//input");
+	By phoneNumber = By.id("phoneNumberInput");
 
-    // Education Dropdown
-    By educationDropdown = By.xpath("//label[contains(text(),'Education')]/following::select[1]");
+	// Occupation Dropdown
+	By occupationDropdown = By.id("RM_ddlCategory");
 
-    // Identity Type
-    By identityType = By.xpath("//label[contains(text(),'Identity Type')]/following::select[1]");
-    By identityNumber = By.xpath("//*[@id='main']//form//div[13]//input");
+	// Education Dropdown
+	By educationDropdown = By.xpath("//label[contains(text(),'Education')]/following::select[1]");
 
-    // Address
-    By houseNo = By.xpath("//*[@id='main']//div[2]//div[2]//input");
+	// Identity Type
+	By identityType = By.xpath("//label[contains(text(),'Identity Type')]/following::select[1]");
+	By identityNumber = By.xpath("//*[@id='main']//form//div[13]//input");
 
-    // Village Field
-    By villageField = By.name("selectedRegistrationDomainEH.AreaName");
+	// Address
+	By houseNo = By.xpath("//*[@id='main']//div[2]//div[2]//input");
 
-    // Discount Checkbox
-    By discountCheckbox = By.xpath("//*[@id='main']//div[3]//div[2]//div[4]//input");
+	// Village Field
+	By villageField = By.name("selectedRegistrationDomainEH.AreaName");
 
-    // Discount Amount TextField
-    By discountTextField = By.xpath("(//*[@id='main']//form//div[5]//input)[5]");
+	// Discount Checkbox
+	By discountCheckbox = By.xpath("//*[@id='main']//div[3]//div[2]//div[4]//input");
 
-    // Discount Remark Dropdown
-    By discountRemarkDropdown = By.xpath("//label[contains(text(),'Discount Remark')]/following::select[1]");
+	// Discount Amount TextField
+	By discountTextField = By.xpath("(//*[@id='main']//form//div[5]//input)[5]");
 
-    // Mode Dropdown
-    By modeDropdown = By.xpath("//label[contains(text(),'Mode')]/following::select[1]");
+	// Discount Remark Dropdown
+	By discountRemarkDropdown = By.xpath("//label[contains(text(),'Discount Remark')]/following::select[1]");
 
-    // Transaction Id
-    By transactionId = By.xpath("(//*[@id='main']//div[8]//input)[2]");
-    
-    //registrationBtn
-    By registrationBtn = By.id("RM_btnSubmit");
+	// Mode Dropdown
+	By modeDropdown = By.xpath("//label[contains(normalize-space(),'Mode')]/following::select[1]");
 
+	// Transaction Id
+	By transactionId = By.xpath("(//*[@id='main']//div[8]//input)[2]");
 
-    // Occupation Select
-    public void selectOccupation() {
+	// registrationBtn
+	By registrationBtn = By.id("RM_btnSubmit");
 
-        wait.until(ExpectedConditions.elementToBeClickable(occupationDropdown));
+	// Occupation Select
+	public void selectOccupation() {
 
-        Select occupation = new Select(driver.findElement(occupationDropdown));
-        occupation.selectByVisibleText("Private service");
-    }
+		wait.until(ExpectedConditions.elementToBeClickable(occupationDropdown));
 
+		Select occupation = new Select(driver.findElement(occupationDropdown));
 
-    // Identity Type Select
-    public void selectIdentityType() {
+		boolean found = false;
 
-        wait.until(ExpectedConditions.elementToBeClickable(identityType));
+		for (WebElement option : occupation.getOptions()) {
 
-        Select idType = new Select(driver.findElement(identityType));
-        idType.selectByVisibleText("Nationalid");
-    }
+			String text = option.getText().trim();
 
+			if (text.equalsIgnoreCase("Private service")) {
+				occupation.selectByVisibleText(option.getText());
+				found = true;
+				break;
+			}
+		}
 
-    // Village Auto Select
-    public void selectVillage(String villageName) {
+		if (!found) {
+			throw new RuntimeException("Occupation option 'Private service' not found in dropdown");
+		}
+	}
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(villageField));
+	// Identity Type Select
+	public void selectIdentityType() {
 
-        driver.findElement(villageField).sendKeys(villageName);
+		wait.until(ExpectedConditions.elementToBeClickable(identityType));
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		Select idType = new Select(driver.findElement(identityType));
+		idType.selectByVisibleText("NATIONAL ID");
+	}
 
-        driver.findElement(villageField).sendKeys(Keys.ARROW_DOWN);
-        driver.findElement(villageField).sendKeys(Keys.ENTER);
-    }
+	// Village Auto Select
+	public void selectVillage(String villageName) {
 
+		wait.until(ExpectedConditions.visibilityOfElementLocated(villageField));
 
-    // Apply Discount
-    public void applyDiscount(String amount) {
+		driver.findElement(villageField).sendKeys(villageName);
 
-        WebElement checkbox = wait.until(
-                ExpectedConditions.elementToBeClickable(discountCheckbox));
-        checkbox.click();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		driver.findElement(villageField).sendKeys(Keys.ARROW_DOWN);
+		driver.findElement(villageField).sendKeys(Keys.ENTER);
+	}
 
-        WebElement discountField = wait.until(
-                ExpectedConditions.elementToBeClickable(discountTextField));
+	// Apply Discount
+	public void applyDiscount(String amount) {
 
-        discountField.clear();
-        discountField.sendKeys(amount);
-    }
+		WebElement checkbox = wait.until(ExpectedConditions.elementToBeClickable(discountCheckbox));
+		checkbox.click();
 
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
-    // Select Discount Remark
-    public void selectDiscountRemark(String remark) {
+		WebElement discountField = wait.until(ExpectedConditions.elementToBeClickable(discountTextField));
 
-        wait.until(ExpectedConditions.elementToBeClickable(discountRemarkDropdown));
+		discountField.clear();
+		discountField.sendKeys(amount);
+	}
 
-        Select remarkDropdown = new Select(driver.findElement(discountRemarkDropdown));
-        remarkDropdown.selectByVisibleText(remark);
-    }
+	// Select Discount Remark
+	public void selectDiscountRemark(String remark) {
 
+		wait.until(ExpectedConditions.elementToBeClickable(discountRemarkDropdown));
 
-    // Mode Select
-    public void selectMode(String modeType) {
+		Select remarkDropdown = new Select(driver.findElement(discountRemarkDropdown));
+		remarkDropdown.selectByVisibleText(remark);
+	}
+
+	// Mode Select
+	    public void selectMode(String modeType) {
 
         WebElement dropdown = wait.until(
                 ExpectedConditions.elementToBeClickable(modeDropdown));
@@ -166,65 +175,98 @@ public class HWalkInRegistrationPage extends BasePage{
     }
 
 
+	// Walk-In Registration
+	public void registerWalkInPatient() throws InterruptedException {
 
-    // Walk-In Registration
-    public void registerWalkInPatient() {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(firstName));
+		String firstNameData = IndianFakerData.getFirstName();
+		String lastNameData = IndianFakerData.getLastName();
+		String nextOfKinData = IndianFakerData.getNextOfKin();
+		String phoneData = IndianFakerData.getPhoneNumber();
+		String addressData = IndianFakerData.getHouseAddress();
+		String aadhaarData = IndianFakerData.getAadhaarNumber();
+		String dobData = IndianFakerData.getDOBFromAge();
+		
+		type(firstName, firstNameData);
+		type(lastName, lastNameData);
 
-        type(firstName,"Sushant");
-        type(lastName,"kumar");
+		click(genderMale);
 
-        click(genderMale);
+		type(dob, dobData);
 
-        type(dob,"10-05-2000");
+		type(nextOfKin, nextOfKinData);
+		type(phoneNumber, phoneData);
 
-        type(nextOfKin,"Suresh");
-        type(phoneNumber,"316514654165");
+		type(identityNumber, aadhaarData);
 
-        // Occupation
-        selectOccupation();
+		type(houseNo, addressData);
 
-        // Education
-        driver.findElement(educationDropdown).sendKeys("Graduate");
+		// Occupation
+		selectOccupation();
 
-        // Identity
-        selectIdentityType();
-        type(identityNumber,"123456789012");
+		// Education
+		driver.findElement(educationDropdown).sendKeys("Graduate");
 
-        // Address
-        type(houseNo,"123 Main Street");
+		// Identity
+		selectIdentityType();
+		WebElement identityField = wait.until(
+		        ExpectedConditions.elementToBeClickable(identityNumber));
 
-        // Village
-        selectVillage("Rampur");
+		identityField.click();
+		identityField.sendKeys(Keys.CONTROL + "a");
+		identityField.sendKeys(Keys.DELETE);
 
-        // Apply Discount
-        applyDiscount("10");
+		((JavascriptExecutor) driver).executeScript(
+		        "arguments[0].value = arguments[1];" +
+		        "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));" +
+		        "arguments[0].dispatchEvent(new Event('change', {bubbles:true}));",
+		        identityField,
+		        aadhaarData);
 
-        // Discount Remark
-        selectDiscountRemark("Free visit");
+		System.out.println("Generated Aadhaar : " + aadhaarData);
 
-        // Mode
-        selectMode("UPI");
+		// Address
+		type(houseNo, addressData);
+		
 
-        // Transaction Id
-        driver.findElement(transactionId).sendKeys("gpayr373677343");
-       
-        //registrationBtn
-//        click(registrationBtn);
+		
+		// Village
+		selectVillage("Rampur");
 
-     // wait for popup
-        wait.until(driver -> 
-            driver.findElements(By.xpath("//div[contains(@class,'alert') or contains(@class,'swal2-popup')]")).size() > 0
-        );
+		// Apply Discount
+		applyDiscount("10");
 
-        // handle popups
-        popup.handlePopupFast();
-       
+		// Mode
+		selectMode("UPI");
 
-     String alertMsg = popup.handlePopupFast();
-     System.out.println(alertMsg);
-        
-    }
+		// Transaction Id
+		driver.findElement(transactionId).sendKeys("gpayr373677343");
+
+		// Discount Remark
+		selectDiscountRemark("FREE VISIT");
+		System.out.println("First Name : " + firstNameData);
+		System.out.println("Last Name : " + lastNameData);
+		System.out.println("DOB : " + dobData);
+		System.out.println("Next Of Kin : " + nextOfKinData);
+		System.out.println("Phone : " + phoneData);
+		System.out.println("Address : " + addressData);
+		System.out.println("Aadhaar : " + aadhaarData);
+
+		// registrationBtn
+		click(registrationBtn);
+
+		// wait for popup
+		wait.until(driver -> driver
+				.findElements(By.xpath("//div[contains(@class,'alert') or contains(@class,'swal2-popup')]"))
+				.size() > 0);
+
+		// handle popups
+		popup.handlePopupFast();
+
+		String alertMsg = popup.handlePopupFast();
+		System.out.println(alertMsg);
+
+	}
 
 }
