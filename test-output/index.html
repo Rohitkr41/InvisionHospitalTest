@@ -50,7 +50,7 @@
               <ul>
                 <li>
                   <a href="#" panel-name="test-xml-Default_suite" class="navigator-link ">
-                    <span>C:\Users\sumit\AppData\Local\Temp\testng-eclipse-1846214529\testng-customsuite.xml</span>
+                    <span>C:\Users\sumit\AppData\Local\Temp\testng-eclipse-2020520535\testng-customsuite.xml</span>
                   </a> <!-- navigator-link  -->
                 </li>
                 <li>
@@ -103,7 +103,7 @@
                     <div class="method-list-content skipped suite-Default_suite">
                       <span>
                         <img src="skipped.png" width="3%"/>
-                        <a href="#" panel-name="suite-Default_suite" title="tests.eyeExaminationSearch.HComplaintOcularTest" class="method navigator-link" hash-for-method="testComplaintAndOcularHistory">testComplaintAndOcularHistory</a> <!-- method navigator-link -->
+                        <a href="#" panel-name="suite-Default_suite" title="tests.billing.HBillingReceiptTest" class="method navigator-link" hash-for-method="approvePendingDiscountUsingDateFilter">approvePendingDiscountUsingDateFilter</a> <!-- method navigator-link -->
                       </span>
                       <br/>
                     </div> <!-- method-list-content skipped suite-Default_suite -->
@@ -121,35 +121,22 @@
           <div class="suite-Default_suite-class-skipped">
             <div class="main-panel-header rounded-window-top">
               <img src="skipped.png"/>
-              <span class="class-name">tests.eyeExaminationSearch.HComplaintOcularTest</span>
+              <span class="class-name">tests.billing.HBillingReceiptTest</span>
             </div> <!-- main-panel-header rounded-window-top -->
             <div class="main-panel-content rounded-window-bottom">
               <div class="method">
                 <div class="method-content">
-                  <a name="testComplaintAndOcularHistory">
-                  </a> <!-- testComplaintAndOcularHistory -->
-                  <span class="method-name">testComplaintAndOcularHistory</span>
-                  <div class="stack-trace">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for visibility of element located by By.name: fromDatePres (tried for 20 second(s) with 500 milliseconds interval)
-Build info: version: &apos;4.18.1&apos;, revision: &apos;b1d3319b48&apos;
-System info: os.name: &apos;Windows 11&apos;, os.arch: &apos;amd64&apos;, os.version: &apos;10.0&apos;, java.version: &apos;17.0.12&apos;
-Driver info: org.openqa.selenium.chrome.ChromeDriver
-Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 146.0.7680.178, chrome: {chromedriverVersion: 146.0.7680.165 (4b989da09e1..., userDataDir: C:\Users\sumit\AppData\Loca...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:50674}, goog:processID: 26036, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:50674/devtoo..., se:cdpVersion: 146.0.7680.178, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
-Session ID: 9d51792f1ec649dca3d9524041444d09
-	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
-	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
-	at pages.eyeExaminationSearch.HEyeExaminationActionPage.openAdvanceSearch(HEyeExaminationActionPage.java:74)
-	at pages.eyeExaminationSearch.HEyeExaminationActionPage.searchByDate(HEyeExaminationActionPage.java:102)
-	at tests.eyeExaminationSearch.HComplaintOcularTest.setupPage(HComplaintOcularTest.java:38)
+                  <a name="approvePendingDiscountUsingDateFilter">
+                  </a> <!-- approvePendingDiscountUsingDateFilter -->
+                  <span class="method-name">approvePendingDiscountUsingDateFilter</span>
+                  <div class="stack-trace">org.testng.SkipException: No row found with Discount = Approval Pending
+	at tests.billing.HBillingReceiptTest.approvePendingDiscountUsingDateFilter(HBillingReceiptTest.java:165)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
 	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:141)
-	at org.testng.internal.invokers.MethodInvocationHelper.invokeMethodConsideringTimeout(MethodInvocationHelper.java:71)
-	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurationMethod(ConfigInvoker.java:400)
-	at org.testng.internal.invokers.ConfigInvoker.invokeConfigurations(ConfigInvoker.java:333)
-	at org.testng.internal.invokers.TestInvoker.runConfigMethods(TestInvoker.java:836)
-	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:601)
+	at org.testng.internal.invokers.TestInvoker.invokeMethod(TestInvoker.java:687)
 	at org.testng.internal.invokers.TestInvoker.invokeTestMethod(TestInvoker.java:230)
 	at org.testng.internal.invokers.MethodRunner.runInSequence(MethodRunner.java:63)
 	at org.testng.internal.invokers.TestInvoker$MethodInvocationAgent.invoke(TestInvoker.java:995)
@@ -181,7 +168,7 @@ Session ID: 9d51792f1ec649dca3d9524041444d09
         </div> <!-- panel Default_suite -->
         <div panel-name="test-xml-Default_suite" class="panel">
           <div class="main-panel-header rounded-window-top">
-            <span class="header-content">C:\Users\sumit\AppData\Local\Temp\testng-eclipse-1846214529\testng-customsuite.xml</span>
+            <span class="header-content">C:\Users\sumit\AppData\Local\Temp\testng-eclipse-2020520535\testng-customsuite.xml</span>
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <pre>
@@ -190,7 +177,7 @@ Session ID: 9d51792f1ec649dca3d9524041444d09
 &lt;suite name=&quot;Default suite&quot; guice-stage=&quot;DEVELOPMENT&quot;&gt;
   &lt;test thread-count=&quot;5&quot; name=&quot;Default test&quot; verbose=&quot;2&quot;&gt;
     &lt;classes&gt;
-      &lt;class name=&quot;tests.eyeExaminationSearch.HComplaintOcularTest&quot;/&gt;
+      &lt;class name=&quot;tests.billing.HBillingReceiptTest&quot;/&gt;
     &lt;/classes&gt;
   &lt;/test&gt; &lt;!-- Default test --&gt;
 &lt;/suite&gt; &lt;!-- Default suite --&gt;
@@ -232,14 +219,14 @@ data.addColumn('string', 'Class');
 data.addColumn('number', 'Time (ms)');
 data.addRows(1);
 data.setCell(0, 0, 0)
-data.setCell(0, 1, 'testComplaintAndOcularHistory')
-data.setCell(0, 2, 'tests.eyeExaminationSearch.HComplaintOcularTest')
-data.setCell(0, 3, 0);
+data.setCell(0, 1, 'approvePendingDiscountUsingDateFilter')
+data.setCell(0, 2, 'tests.billing.HBillingReceiptTest')
+data.setCell(0, 3, 5283);
 window.suiteTableData['Default_suite']= { tableData: data, tableDiv: 'times-div-Default_suite'}
 return data;
 }
               </script>
-              <span class="suite-total-time">Total running time: 0 ms</span>
+              <span class="suite-total-time">Total running time: 5 seconds</span>
               <div id="times-div-Default_suite">
               </div> <!-- times-div-Default_suite -->
             </div> <!-- times-div -->
@@ -265,20 +252,22 @@ return data;
           </div> <!-- main-panel-header rounded-window-top -->
           <div class="main-panel-content rounded-window-bottom">
             <div class="chronological-class">
-              <div class="chronological-class-name">tests.eyeExaminationSearch.HComplaintOcularTest</div> <!-- chronological-class-name -->
+              <div class="chronological-class-name">tests.billing.HBillingReceiptTest</div> <!-- chronological-class-name -->
               <div class="configuration-method before">
                 <span class="method-name">setUp</span>
                 <span class="method-start">0 ms</span>
               </div> <!-- configuration-method before -->
               <div class="configuration-method before">
-                <img src="failed.png">
-                </img>
                 <span class="method-name">setupPage</span>
-                <span class="method-start">2763 ms</span>
+                <span class="method-start">3131 ms</span>
               </div> <!-- configuration-method before -->
+              <div class="test-method">
+                <span class="method-name">approvePendingDiscountUsingDateFilter</span>
+                <span class="method-start">8700 ms</span>
+              </div> <!-- test-method -->
               <div class="configuration-method after">
                 <span class="method-name">tearDown</span>
-                <span class="method-start">27166 ms</span>
+                <span class="method-start">13988 ms</span>
               </div> <!-- configuration-method after -->
           </div> <!-- main-panel-content rounded-window-bottom -->
         </div> <!-- panel -->

@@ -1,8 +1,13 @@
 package pages.billing;
 
+import java.time.Duration;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import pages.BasePage;
 import utils.ExcelUtils;
@@ -202,5 +207,78 @@ public class HBillingReceiptPage extends BasePage{
             e.printStackTrace();
         }
     }
+    
+   public boolean approvePendingDiscountByDateFilter(String fromDate, String toDate, String remarks) {
+    advanceSearchByDate(fromDate, toDate);
+
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//table/tbody/tr")));
+
+    List<WebElement> rows = driver.findElements(By.xpath("//table/tbody/tr"));
+
+    for (WebElement row : rows) {
+        String rowText = row.getText().trim();
+
+        // Skip empty/non-data rows
+        if (rowText.isEmpty()) {
+            continue;
+        }
+
+        // Process only rows that contain Approval Pending
+        if (!rowText.toLowerCase().contains("approval pending")) {
+            continue;
+        }
+
+        WebElement approveIcon = row.findElement(
+            By.xpath(".//i[@title='Discount Approved' and contains(@class,'fa-check-circle')]")
+        );
+        wait.until(ExpectedConditions.elementToBeClickable(approveIcon)).click();
+
+        WebElement discountRemarksField = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//*[@id='main']/article/div[4]/div/div[2]/form/div[1]/input")
+            )
+        );
+        discountRemarksField.clear();
+        discountRemarksField.sendKeys(remarks);
+
+        WebElement approveButton = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[@type='submit' and normalize-space()='Approve']")
+            )
+        );
+        approveButton.click();
+
+        handleDiscountApprovedSuccessAlert();
+        return true;
+    }
+
+    System.out.println("No Approval Pending row found. Approval step skipped.");
+    return false;
+}
+
+
+    
+    
+    public void handleDiscountApprovedSuccessAlert() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement successMessage = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[contains(@class,'modal-body')]//p[normalize-space()='Discount approved successfully!']")
+            )
+        );
+
+        if (successMessage.isDisplayed()) {
+            WebElement okButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.xpath("(//div[contains(@class,'alert-btn')]//button[normalize-space()='OK'])[3]")
+                )
+            );
+            okButton.click();
+        }
+    }
+
+
 
 }

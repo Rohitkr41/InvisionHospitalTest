@@ -19,13 +19,11 @@ public class HVisualAcuityRefractionPage extends BasePage {
     // =============================
     // LEFT MENU
     // =============================
-
     By visualAcuityMenu = By.xpath("//*[@id='side-box-nav']/li[4]/a");
 
     // =============================
     // VISUAL ACUITY SECTION
     // =============================
-
     By wearingGlassesYes = By.id("RM_rdbYes");
     By periodField = By.id("numberInput");
     By durationDropdown = By.xpath("//*[@id='box-main']//div[2]/select");
@@ -33,29 +31,32 @@ public class HVisualAcuityRefractionPage extends BasePage {
     By ableCheckVisionYes = By.id("RM_rdbyess");
     By ableCheckVisionNo = By.id("RM_rdbnoss");
 
-//    By remarksField = By.xpath("(//*[@id='box-main']//div/input)[2]");
     By remarksField = By.xpath("(//label[contains(text(),'Remarks')]/following::input[1])[1]");
     By visionWithGlassesNo = By.xpath("(//*[@id='box-main']//div[2]/label/input)[3]");
-    
+
     // =============================
     // PRESENTING VISION
     // =============================
-
     By reDVA = By.xpath("(//*[@id='box-main']//div[5]//input)[1]");
-    By reNVA = By.xpath("(//*[@id='box-main']//div[5]//input)[2]");
-    By rePinhole = By.xpath("(//*[@id='box-main']//div[5]//input)[3]");
+    
+    By rePinhole = By.xpath("(//div[label[contains(text(),'Pinhole')]]//input)[1]");
+    By reNVA = By.xpath("(//div[label[contains(text(),'NVA')]]//input)[1]");
 
     By leDVA = By.xpath("(//*[@id='box-main']//div[6]//div/input)[1]");
-    By leNVA = By.xpath("(//*[@id='box-main']//div[6]//div/input)[2]");
-    By lePinhole = By.xpath("(//*[@id='box-main']//div[6]//div/input)[3]");
+   
+    By lePinhole = By.xpath("(//div[label[contains(text(),'Pinhole')]]//input)[2]");
+    By leNVA = By.xpath("(//div[label[contains(text(),'NVA')]]//input)[2]");
 
     By saveVisualAcuity = By.xpath("//button[contains(text(),'Save Visual Acuity')]");
 
     // =============================
+    // REFRACTION (RE only for now)
+    // =============================
+ // =============================
     // RIGHT EYE (RE)
     // =============================
 
-    By rePrevSPH = By.xpath("(//*[@id=\"box-main\"]/div/div[2]/div/div[1]/div[2]//div[1]/div/input)[1]");
+    By rePrevSPH = By.xpath("(//label[normalize-space()='SPH']/following::input[1])[1]");
     By rePrevCYL = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[2]//div[2]/div/input)[1]");
     By rePrevAXIS = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[1]/div[2]//div[3]/div/input)[1]");
 //    By rePrevADD = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[1]//div[1]//div[4]/div/input)[1]");
@@ -82,7 +83,8 @@ public class HVisualAcuityRefractionPage extends BasePage {
     By reIOPTime = By.xpath("(//input[@type='time'])[1]");
     By reIOPValue = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[2]//div[2]/div/input)[6]");
     By reIOPRemarks = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[2]//div[8]//input)[1]");
-
+    
+    
     // =============================
     // LEFT EYE (LE)
     // =============================
@@ -115,58 +117,137 @@ public class HVisualAcuityRefractionPage extends BasePage {
     By leIOPRemarks = By.xpath("(//*[@id=\"box-main\"]/div/div[2]//div[2]//div[8]//input)[2]");
 
     By saveRefraction = By.xpath("//button[contains(text(),'Save Refraction')]");
-    
-    
 
     // =============================
-    // CLICK VISUAL ACUITY MENU
+    // CLICK MENU
     // =============================
-
     public void clickVisualAcuityMenu() {
+        waitUntilModalGone();
         wait.until(ExpectedConditions.elementToBeClickable(visualAcuityMenu)).click();
     }
 
     // =============================
     // ADD VISUAL ACUITY
     // =============================
-
     public void addVisualAcuity() {
 
-    wait.until(ExpectedConditions.elementToBeClickable(wearingGlassesYes)).click();
+        waitUntilModalGone();
 
-    // 🔥 FIXED
-    clearAndType(periodField, "2");
+        clickWhenModalGone(wait.until(ExpectedConditions.elementToBeClickable(wearingGlassesYes)));
 
-    driver.findElement(durationDropdown).sendKeys("Week");
+        WebElement period = waitUntilModalGoneAndVisible(periodField);
+        period.clear();
+        period.sendKeys("2");
 
-    wait.until(ExpectedConditions.elementToBeClickable(ableCheckVisionYes)).click();
+        driver.findElement(durationDropdown).sendKeys("Days");
 
-    // 🔥 FIXED
-    setAngularInput(reRemarks, "Vision normal");
+        clickWhenModalGone(wait.until(ExpectedConditions.elementToBeClickable(visionWithGlassesNo)));
 
-    wait.until(ExpectedConditions.elementToBeClickable(visionWithGlassesNo)).click();
+        // 🔥 IMPORTANT WAIT (fix for your issue)
+        wait.until(ExpectedConditions.elementToBeClickable(reDVA));
 
-    selectFromAutocomplete(reDVA, "6/6");
-    selectFromAutocomplete(reNVA, "2/8");
-    selectFromAutocomplete(rePinhole, "6/9");
+        // RE (Correct order as per your XPath)
+        enterValue(reDVA, "6/6");
+        
+        enterValue(rePinhole, "6/18");
+        enterValue(reNVA, "2/10");
 
-    selectFromAutocomplete(leDVA, "6/6");
-    selectFromAutocomplete(leNVA, "2/8");
-    selectFromAutocomplete(lePinhole, "6/6");
+        // LE
+        enterValue(leDVA, "6/6");
+        
+        enterValue(lePinhole, "6/18");
+        enterValue(leNVA, "2/10");
 
-    // 🔥 SAVE FIX
-    WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveVisualAcuity));
-    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", saveBtn);
+        clickWhenModalGone(wait.until(ExpectedConditions.elementToBeClickable(saveVisualAcuity)));
 
-    // 🔥 ALERT FIX
-    handleVisualAcuityAlert();
-   
-   
+        waitUntilModalGone();
+    }
 
-//    System.out.println("Refraction Alert: " + message);
+    // =============================
+    // ADD REFRACTION
+    // =============================
+    public void addRefraction() {
+        
+    	enterDropdownValue(rePrevSPH, "-1.00");
+    	enterDropdownValue(rePrevCYL, "-0.50");
+    	enterDropdownValue(rePrevAXIS, "160");
+//        selectPreviousADD(rePrevADD, "2.50");
+    	enterDropdownValue(rePrevADD, "2.25");
 
-    wait.until(ExpectedConditions.visibilityOfElementLocated(rePrevSPH));
-}
+
+    	enterDropdownValue(reDrySPH, "-1.25");
+    	enterDropdownValue(reDryCYL, "-0.50");
+    	enterDropdownValue(reDryAXIS, "170");
+
+    	enterDropdownValue(reWetSPH, "-1.00");
+    	enterDropdownValue(reWetCYL, "-0.25");
+    	enterDropdownValue(reWetAXIS, "175");
+
+    	enterDropdownValue(reAccSPH, "-1.00");
+    	enterDropdownValue(reAccCYL, "-0.50");
+    	enterDropdownValue(reAccAXIS, "160");
+
+    	enterDropdownValue(reBCVA, "2.75");
+    	enterDropdownValue(reADD, "3.25");
+    	enterDropdownValue(reNVA1, "2/8");
+    	enterDropdownValue(reNPC, "20");
+
+        enterValue(reRemarks, "Right eye normal");
+        enterDropdownValue(reIOPValue, "20.6");
+        enterValue(reIOPRemarks, "IOP normal");
+
+        // 🔥 MID SCROLL (important for LE section)
+        scrollToBottom();
+
+        // =============================
+        // LEFT EYE (LE)
+        // =============================
+
+        enterDropdownValue(lePrevSPH, "-1.25");
+        enterDropdownValue(lePrevCYL, "-0.75");
+        enterDropdownValue(lePrevAXIS, "170");
+        enterDropdownValue(lePrevADD, "10");
+
+        enterValue(leDrySPH, "-1.50");
+        enterValue(leDryCYL, "-0.50");
+        enterValue(leDryAXIS, "165");
+
+        enterValue(leWetSPH, "-1.25");
+        enterValue(leWetCYL, "-0.25");
+        enterValue(leWetAXIS, "170");
+
+        enterDropdownValue(leAccSPH, "-1.25");
+        enterDropdownValue(leAccCYL, "-0.50");
+        enterDropdownValue(leAccAXIS, "170");
+
+        enterDropdownValue(leBCVA, "2.75");
+        enterValue(leADD, "2.25");
+        enterValue(leNVA1, "2/8");
+        enterDropdownValue(leNPC, "3");
+
+        enterValue(leRemarks, "Left eye normal");
+        enterDropdownValue(leIOPValue, "20.6");
+        enterValue(leIOPRemarks, "IOP normal");
+
+        // 🔥 FINAL SCROLL before SAVE
+        scrollToElement(saveRefraction);
+        System.out.println("SPH: " + driver.findElement(rePrevSPH).getAttribute("value"));
+        System.out.println("CYL: " + driver.findElement(rePrevCYL).getAttribute("value"));
+        System.out.println("AXIS: " + driver.findElement(rePrevAXIS).getAttribute("value"));
+        WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveRefraction));
+        saveBtn.click();
+
+        //Alert hande
+        handleVisualAcuityAlert();
+
+    }
+    
+  //🔥 ScrollTill Bottom
+  	public void scrollToBottom() {
+  	 ((JavascriptExecutor) driver).executeScript(
+  	     "window.scrollTo(0, document.body.scrollHeight)"
+  	 );
+  	}
 
     
     /**
@@ -206,278 +287,116 @@ public class HVisualAcuityRefractionPage extends BasePage {
         return message;
     }
 
-    // =============================
-    // ADD REFRACTION
-    // =============================
 
-  public void addRefraction() {
-
-    waitForVisibility(rePrevSPH);
-
-    // 🔥 SCROLL to refraction section start
-    scrollToElement(rePrevSPH);
 
     // =============================
-    // RIGHT EYE (RE)
+    // COMMON HELPERS
     // =============================
+    
+    
+  private void enterValue(By locator, String value) {
 
-    selectFromAutocomplete(rePrevSPH, "-1.00");
-    selectFromAutocomplete(rePrevCYL, "-0.50");
-    selectFromAutocomplete(rePrevAXIS, "180");
-//    selectPreviousADD(rePrevADD, "2.50");
-    selectPreviousADD(rePrevADD, "2.25");
+    WebElement el = waitUntilModalGoneAndVisible(locator);
 
+    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].scrollIntoView({block:'center'});", el);
 
-    selectFromAutocomplete(reDrySPH, "-1.25");
-    selectFromAutocomplete(reDryCYL, "-0.50");
-    selectFromAutocomplete(reDryAXIS, "170");
+    wait.until(ExpectedConditions.elementToBeClickable(el));
 
-    selectFromAutocomplete(reWetSPH, "-1.00");
-    selectFromAutocomplete(reWetCYL, "-0.25");
-    selectFromAutocomplete(reWetAXIS, "175");
+    // 🔥 SMALL WAIT (UI settle hone ke liye)
+    try { Thread.sleep(300); } catch (Exception ignored) {}
 
-    selectFromAutocomplete(reAccSPH, "-1.00");
-    selectFromAutocomplete(reAccCYL, "-0.50");
-    selectFromAutocomplete(reAccAXIS, "180");
+    // 🔥 NATIVE SETTER + EVENTS
+    ((JavascriptExecutor) driver).executeScript(
+        "const element = arguments[0];" +
+        "const val = arguments[1];" +
+        "const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;" +
+        "setter.call(element, val);" +
+        "element.dispatchEvent(new Event('input', { bubbles: true }));" +
+        "element.dispatchEvent(new Event('change', { bubbles: true }));" +
+        "element.dispatchEvent(new Event('blur', { bubbles: true }));",
+        el, value
+    );
 
-    fastType(reBCVA, "2.75");
-    fastType(reADD, "3.25");
-    selectFromAutocomplete(reNVA1, "2/8");
-    selectFromAutocomplete(reNPC, "20");
+    // 🔥 WAIT UNTIL VALUE IS ACTUALLY SET (CRITICAL)
+    int attempts = 0;
+    while (attempts < 5) {
+        String current = el.getAttribute("value");
 
-    fastType(reRemarks, "Right eye normal");
-    selectFromAutocomplete(reIOPValue, "20.6");
-    fastType(reIOPRemarks, "IOP normal");
+        if (value.equals(current)) {
+            break;
+        }
 
-    // 🔥 MID SCROLL (important for LE section)
-    scrollToBottom();
+        try { Thread.sleep(200); } catch (Exception ignored) {}
+        attempts++;
+    }
 
-    // =============================
-    // LEFT EYE (LE)
-    // =============================
+    // 🔥 EXTRA BLUR (safety for Angular)
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].blur();", el
+    );
 
-    selectFromAutocomplete(lePrevSPH, "-1.25");
-    selectFromAutocomplete(lePrevCYL, "-0.75");
-    selectFromAutocomplete(lePrevAXIS, "170");
-    setValueByJS(lePrevADD, "1.00");
+    // 🔥 FINAL SMALL WAIT
+    try { Thread.sleep(300); } catch (Exception ignored) {}
+}
+  
+  
+	private void enterDropdownValue(By locator, String value) {
 
-    selectFromAutocomplete(leDrySPH, "-1.50");
-    selectFromAutocomplete(leDryCYL, "-0.50");
-    selectFromAutocomplete(leDryAXIS, "165");
+    WebElement el = waitUntilModalGoneAndVisible(locator);
+    wait.until(ExpectedConditions.elementToBeClickable(el));
 
-    selectFromAutocomplete(leWetSPH, "-1.25");
-    selectFromAutocomplete(leWetCYL, "-0.25");
-    selectFromAutocomplete(leWetAXIS, "170");
+    el.click();
 
-    selectFromAutocomplete(leAccSPH, "-1.25");
-    selectFromAutocomplete(leAccCYL, "-0.50");
-    selectFromAutocomplete(leAccAXIS, "170");
+    // clear
+    el.sendKeys(Keys.CONTROL + "a");
+    el.sendKeys(Keys.DELETE);
 
-    fastType(leBCVA, "2.75");
-    selectFromAutocomplete(leADD, "2.25");
-    selectFromAutocomplete(leNVA1, "2/8");
-    selectFromAutocomplete(leNPC, "20");
+    // type value
+    el.sendKeys(value);
 
-    fastType(leRemarks, "Left eye normal");
-    forceSetValue(leIOPValue, "20.6");
-    fastType(leIOPRemarks, "IOP normal");
+    // 🔥 WAIT FOR ANY DROPDOWN OPTIONS (not exact text)
+    By options = By.xpath("//div[contains(@class,'option') or contains(@class,'menu') or contains(@class,'item')]");
 
-    // 🔥 FINAL SCROLL before SAVE
-    scrollToElement(saveRefraction);
+    wait.until(ExpectedConditions.visibilityOfElementLocated(options));
 
-    WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveRefraction));
-    saveBtn.click();
+    try {
+        // 🔥 TRY CLICK EXACT MATCH (flexible)
+        By exactOption = By.xpath("//*[contains(text(),'" + value + "')]");
 
-    //Alert hande
-    handleVisualAcuityAlert();
+        WebElement optionEl = wait.until(ExpectedConditions.visibilityOfElementLocated(exactOption));
 
+        optionEl.click();
+
+    } catch (Exception e) {
+
+        // 🔥 FALLBACK (MOST RELIABLE)
+        el.sendKeys(Keys.ARROW_DOWN);
+        el.sendKeys(Keys.ENTER);
+    }
+
+    // 🔥 FINAL BLUR
+    el.sendKeys(Keys.TAB);
+
+    try { Thread.sleep(300); } catch (Exception ignored) {}
 }
 
+    private WebElement waitUntilModalGoneAndVisible(By locator) {
+        waitUntilModalGone();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
 
-    
-  public void selectFromAutocomplete(By locator, String value) {
-
-    int attempts = 0;
-
-    while (attempts < 3) {
-
-        try {
-            WebElement input = wait.until(ExpectedConditions.elementToBeClickable(locator));
-
-            ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].scrollIntoView({block:'center'});", input);
-
-            input.click();
-            input.sendKeys(Keys.CONTROL + "a");
-            input.sendKeys(Keys.DELETE);
-            input.sendKeys(value);
-
-            // 🔥 wait dropdown
-            By optionsLocator = By.xpath("//mat-option//span | //ul//li | //div[@role='option']");
-            wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(optionsLocator));
-
-            Thread.sleep(500);
-
-            for (WebElement option : driver.findElements(optionsLocator)) {
-
-                String text = option.getText().trim();
-                System.out.println("Option: " + text);
-
-                // ✅ flexible match
-                if (text.equalsIgnoreCase(value) || text.contains(value)) {
-                    option.click();
-                    return;
-                }
+    private void clickWhenModalGone(WebElement element) {
+        int attempts = 0;
+        while (attempts < 5) {
+            try {
+                waitUntilModalGone();
+                element.click();
+                return;
+            } catch (Exception e) {
+                try { Thread.sleep(200); } catch (Exception ignored) {}
             }
-
-            // 🔥 FALLBACK (keyboard selection)
-            input.sendKeys(Keys.ARROW_DOWN);
-            input.sendKeys(Keys.ENTER);
-
-            return;
-
-        } catch (Exception e) {
-            System.out.println("Retrying autocomplete for value: " + value);
             attempts++;
         }
     }
-
-    throw new RuntimeException("Value not found after retries: " + value);
-}
-
-
-
-	//Safe click with scroll
-	public void safeClick(By locator) {
-	 WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-	
-	 ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-	
-	 try {
-	     element.click();
-	 } catch (Exception e) {
-	     ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-	 }
-	}
-	
-	//🔥 ScrollTill Bottom
-	public void scrollToBottom() {
-	 ((JavascriptExecutor) driver).executeScript(
-	     "window.scrollTo(0, document.body.scrollHeight)"
-	 );
-	}
-	
-	public void setValueByJS(By locator, String value) {
-	    WebElement element = driver.findElement(locator);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	        "arguments[0].value='" + value + "';", element);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	        "arguments[0].dispatchEvent(new Event('change'));", element);
-	}
-	
-	public void forceSetValue(By locator, String value) {
-	    WebElement element = driver.findElement(locator);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	        "arguments[0].value='" + value + "';", element);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	        "arguments[0].dispatchEvent(new Event('input'));", element);
-	    ((JavascriptExecutor) driver).executeScript(
-	        "arguments[0].dispatchEvent(new Event('change'));", element);
-	}
-	
-	
-	public void selectPreviousADD(By locator, String value) {
-	
-	    WebElement field = wait.until(ExpectedConditions.elementToBeClickable(locator));
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	            "arguments[0].scrollIntoView({block:'center'});", field);
-	
-	    // 🔥 STEP 1: click to focus
-	    field.click();
-	
-	    // 🔥 STEP 2: SET VALUE DIRECTLY (CRITICAL)
-	    ((JavascriptExecutor) driver).executeScript(
-	            "arguments[0].value='" + value + "';", field);
-	
-	    // 🔥 STEP 3: TRIGGER ANGULAR EVENTS (VERY IMPORTANT)
-	    ((JavascriptExecutor) driver).executeScript(
-	            "arguments[0].dispatchEvent(new Event('input'));", field);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	            "arguments[0].dispatchEvent(new Event('change'));", field);
-	
-	    ((JavascriptExecutor) driver).executeScript(
-	            "arguments[0].dispatchEvent(new Event('blur'));", field);
-	
-	    // 🔥 STEP 4: WAIT FOR VALUE BIND
-	    wait.until(driver -> {
-	        String val = field.getAttribute("value");
-	        return val != null && val.contains(value);
-	    });
-	
-	    System.out.println("✅ FORCED ADD VALUE: " + field.getAttribute("value"));
-	}
-
-	public void clearAndType(By locator, String value) {
-
-    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-
-    ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].scrollIntoView({block:'center'});", element);
-
-    element.click();
-
-    // 🔥 HARD CLEAR (MULTIPLE LEVEL)
-    element.sendKeys(Keys.CONTROL + "a");
-    element.sendKeys(Keys.DELETE);
-
-    ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].value='';", element);
-
-    ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].dispatchEvent(new Event('input'));", element);
-
-    // 🔥 TYPE
-    element.sendKeys(value);
-
-    // 🔥 VERIFY
-    String val = element.getAttribute("value");
-    if (val == null || val.trim().isEmpty()) {
-        throw new RuntimeException("❌ Value not entered: " + value);
-    }
-}
-
-	public void setAngularInput(By locator, String value) {
-    WebElement input = wait.until(ExpectedConditions.elementToBeClickable(locator));
-
-    // Scroll element into view
-    ((JavascriptExecutor) driver).executeScript(
-        "arguments[0].scrollIntoView({block:'center'});", input);
-
-    // Clear field completely
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value='';", input);
-    input.sendKeys(Keys.CONTROL + "a");
-    input.sendKeys(Keys.DELETE);
-
-    // Set value
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + value + "';", input);
-
-    // Trigger Angular events
-    ((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('input'));", input);
-    ((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('change'));", input);
-    ((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('blur'));", input);
-
-    // Wait until value is correctly set
-    wait.until(driver -> {
-        String val = input.getAttribute("value");
-        return val != null && val.equals(value);
-    });
-
-    System.out.println("✅ Input set for: " + locator + " = " + value);
-}
 }

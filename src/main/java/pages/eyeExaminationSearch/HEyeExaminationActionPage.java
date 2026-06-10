@@ -1,7 +1,10 @@
 package pages.eyeExaminationSearch;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -41,7 +44,7 @@ public class HEyeExaminationActionPage extends BasePage {
 	    // PLUS ICON (FIRST ROW ACTION)
 	    // =============================
 
-	    By plusIcon = By.xpath("//*[@id='h-din']//tbody//tr[1]//td[10]//i[1]");
+	    By plusIcon = By.xpath("//i[@data-access='Examination' and @title='Eye Examination']");
 
 	    // =============================
 	    // SAFE CLICK
@@ -111,46 +114,90 @@ public class HEyeExaminationActionPage extends BasePage {
 	    // CLICK FIRST ROW PLUS ICON
 	    // =============================
 
-	   public void clickFirstRowPlusIcon() {
-	    // Wait for table to have at least one row
-	    wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(resultRow, 0));
+	 public void clickFirstRowPlusIcon() {
 
-	    // Retry logic for stale elements
-	    int attempts = 0;
-	    boolean clicked = false;
+    By rowsLocator = By.xpath("//*[@id='h-din']//tbody//tr");
 
-	    while (attempts < 3 && !clicked) {
-	        try {
-	            // Re-locate the first row plus icon dynamically
-	            By dynamicPlusIcon = By.xpath("//*[@id='h-din']//tbody//tr[1]//td[10]//i[1]");
+    // ✅ Wait for table rows
+    wait.until(ExpectedConditions.presenceOfElementLocated(rowsLocator));
 
-	            WebElement icon = wait.until(
-	                    ExpectedConditions.elementToBeClickable(dynamicPlusIcon));
+    // ✅ 🔥 MOST IMPORTANT: wait for actual data (td)
+    wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.xpath("//*[@id='h-din']//tbody//tr[1]//td")
+    ));
 
-	            // Scroll into view
-	            ((JavascriptExecutor) driver).executeScript(
-	                    "arguments[0].scrollIntoView({block:'center'});", icon);
+    int rowCount = driver.findElements(rowsLocator).size();
+    System.out.println("Total rows: " + rowCount);
 
-	            // Try normal click
-	            icon.click();
-	            clicked = true; // success
-	        } catch (org.openqa.selenium.StaleElementReferenceException e) {
-	            attempts++;
-	        } catch (Exception e) {
-	            // Fallback: JS click if normal click fails
-	            try {
-	                By dynamicPlusIcon = By.xpath("//*[@id='h-din']//tbody//tr[1]//td[10]//i[1]");
-	                WebElement icon = driver.findElement(dynamicPlusIcon);
-	                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", icon);
-	                clicked = true;
-	            } catch (Exception ignored) {
-	            }
-	        }
-	    }
+    for (int i = 1; i <= rowCount; i++) {
 
-	    if (!clicked) {
-	        throw new RuntimeException("Failed to click the first row plus icon after 3 attempts");
-	    }
-	}
+        try {
+            // ✅ Retry mechanism (handle dynamic loading)
+            int retry = 0;
+            String status = "";
+            String patientType = "";
 
+            while (retry < 3) {
+
+                List<WebElement> statusEl = driver.findElements(
+                        By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[9]")
+                );
+
+                List<WebElement> typeEl = driver.findElements(
+                        By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[6]")
+                );
+
+                if (!statusEl.isEmpty() && !typeEl.isEmpty()) {
+                    status = statusEl.get(0).getText().trim().toLowerCase();
+                    patientType = typeEl.get(0).getText().trim().toLowerCase();
+                    break;
+                }
+
+                Thread.sleep(500); // ⏳ wait for data render
+                retry++;
+            }
+
+            if (status.isEmpty() || patientType.isEmpty()) {
+                System.out.println("⚠️ Skipping row " + i + " (data not loaded)");
+                continue;
+            }
+
+            System.out.println("Row " + i + " => Status: [" + status + "] | Type: [" + patientType + "]");
+
+            boolean validStatus = status.contains("in-progress") || status.contains("new");
+            boolean notPostOp = !patientType.contains("post-op");
+
+            if (validStatus && notPostOp) {
+
+                By iconLocator = By.xpath(
+                        "//*[@id='h-din']//tbody//tr[" + i + "]//i[@data-access='Examination' and @title='Eye Examination']"
+                );
+
+                WebElement icon = wait.until(ExpectedConditions.elementToBeClickable(iconLocator));
+
+                ((JavascriptExecutor) driver)
+                        .executeScript("arguments[0].scrollIntoView({block:'center'});", icon);
+
+                try {
+                    icon.click();
+                } catch (Exception e) {
+                    ((JavascriptExecutor) driver)
+                            .executeScript("arguments[0].click();", icon);
+                }
+
+                System.out.println("✅ Clicked Eye Examination for row: " + i);
+                return;
+            }
+
+        } catch (StaleElementReferenceException e) {
+            System.out.println("⚠️ Retrying row " + i + " (stale)");
+            i--; // 🔥 retry same row
+        } catch (Exception e) {
+            System.out.println("⚠️ Skipping row " + i + " due to: " + e.getMessage());
+        }
+    }
+
+    throw new RuntimeException("❌ No valid patient found");
 }
+	   
+}  
