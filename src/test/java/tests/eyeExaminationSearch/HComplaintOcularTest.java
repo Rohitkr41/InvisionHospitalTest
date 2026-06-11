@@ -16,7 +16,7 @@ public class HComplaintOcularTest extends BaseTest {
 	    private HComplaintOcularPage ocularPage;
 
 	    @BeforeMethod
-	    public void setupPage() {
+	    public void setupPage() throws InterruptedException {
 
 	        // LOGIN
 	        LoginPage login = new LoginPage(driver);
@@ -35,7 +35,7 @@ public class HComplaintOcularTest extends BaseTest {
 	        ocularPage = new HComplaintOcularPage(driver);
 
 	        // SEARCH AND OPEN PATIENT
-	        actionPage.searchByDate("08-04-2026", "24-04-2026");
+	        actionPage.searchByDate("11-06-2026", "30-06-2026");
 	        actionPage.clickFirstRowPlusIcon();
 	    }
 
