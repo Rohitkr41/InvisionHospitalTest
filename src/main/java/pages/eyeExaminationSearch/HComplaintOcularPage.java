@@ -2,7 +2,7 @@ package pages.eyeExaminationSearch;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -18,92 +18,84 @@ public class HComplaintOcularPage extends BasePage {
     // =============================
     // LEFT MENU
     // =============================
-    By complaintMenu = By.xpath("//*[@id='side-box-nav']/li[2]/a");
+    private final By complaintMenu =
+            By.xpath("//*[@id='side-box-nav']/li[2]/a");
 
     // =============================
     // CHIEF COMPLAINT
     // =============================
-    By chiefComplaintField = By.xpath("//input[@data-dropdown='complaintDropdown']");
-    By eyeRE = By.id("RM_rdbREs");
-    By periodField = By.id("numberInput");
-    By durationDropdown = By.xpath("//*[@id='box-main']//select");
-    By saveChiefComplaint = By.id("RM_btnSubmit");
+    private final By chiefComplaintField =
+            By.xpath("//input[@data-dropdown='complaintDropdown']");
+
+    private final By eyeRE =
+            By.id("RM_rdbREs");
+
+    private final By periodField =
+            By.id("numberInput");
+
+    private final By durationDropdown =
+            By.xpath("//*[@id='box-main']//select");
+
+    private final By saveChiefComplaint =
+            By.id("RM_btnSubmit");
 
     // =============================
     // OCULAR HISTORY
     // =============================
- // FIRST = Ocular History
-    By ocularHistoryField = By.xpath("(//input[@data-dropdown='ocularDropdown'])[1]");
+    private final By ocularHistoryField =
+            By.xpath("(//input[@data-dropdown='ocularDropdown'])[1]");
 
-    // SECOND = Previous Treatment
-    
-    By ocularEyeRE = By.id("RM_rdbRE");
-    By previousTreatment = By.xpath("(//input[@data-dropdown='ocularDropdown'])[2]");
-    By remarksField = By.xpath("//label[text()='Remarks']/following::input[1]");
-    By saveOcularHistory = By.xpath("(//button[@id='RM_btnSubmit'])[2]");
+    private final By ocularEyeRE =
+            By.id("RM_rdbRE");
+
+    private final By previousTreatment =
+            By.xpath("(//input[@data-dropdown='ocularDropdown'])[2]");
+
+    private final By remarksField =
+            By.xpath("//label[text()='Remarks']/following::input[1]");
+
+    private final By saveOcularHistory =
+            By.xpath("(//button[@id='RM_btnSubmit'])[2]");
 
     // =============================
     // ALERT
     // =============================
-    By duplicateAlertMsg = By.xpath("//div[contains(@class,'alert-body')]//p[contains(text(),'Cheif complaint already exist')]");
-    By duplicateAlertOkBtn = By.xpath("//div[contains(@class,'alert-body')]//button[normalize-space()='OK']");
+    private final By duplicateAlertMsg =
+            By.xpath("//div[contains(@class,'alert-body')]//p[contains(text(),'Cheif complaint already exist')]");
+
+    private final By duplicateAlertOkBtn =
+            By.xpath("//div[contains(@class,'alert-body')]//button[normalize-space()='OK']");
 
     // =============================
-    // CLICK MENU
+    // MENU
     // =============================
     public void clickComplaintMenu() {
         waitUntilModalGone();
-        wait.until(ExpectedConditions.elementToBeClickable(complaintMenu)).click();
+
+        WebElement menu =
+                wait.until(ExpectedConditions.elementToBeClickable(complaintMenu));
+
+        safeClick(menu);
     }
 
     // =============================
-    // 🔥 UNIVERSAL DROPDOWN HANDLER
-    // =============================
-    private void selectFromDropdown(By inputLocator, String value) {
-
-        WebElement input = waitUntilModalGoneAndVisible(inputLocator);
-
-        input.click();
-        input.clear();
-        input.sendKeys(value);
-
-        // wait for suggestion list
-        By list = By.xpath("//ul[contains(@class,'suggestions-list')]");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(list));
-
-        // exact match option
-        By option = By.xpath("//li[contains(@class,'suggestion-item') and normalize-space()='" + value + "']");
-        WebElement el = wait.until(ExpectedConditions.elementToBeClickable(option));
-
-        try {
-            el.click();
-        } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", el);
-        }
-
-        // trigger blur (important)
-        ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].dispatchEvent(new Event('blur', { bubbles: true }));", input);
-    }
-
-    // =============================
-    // ADD CHIEF COMPLAINT
+    // CHIEF COMPLAINT
     // =============================
     public void addChiefComplaint() {
 
         waitUntilModalGone();
 
-        selectFromDropdown(chiefComplaintField, "Eye strain");
+        selectFromDropdown(chiefComplaintField, "BLUR VISION");
 
-        clickWhenModalGone(wait.until(ExpectedConditions.elementToBeClickable(eyeRE)));
+        safeClick(waitVisible(eyeRE));
 
-        WebElement period = waitUntilModalGoneAndVisible(periodField);
+        WebElement period = waitVisible(periodField);
         period.clear();
         period.sendKeys("2");
 
-        driver.findElement(durationDropdown).sendKeys("Days");
+        waitVisible(durationDropdown).sendKeys("Days");
 
-        driver.findElement(saveChiefComplaint).click();
+        safeClick(waitVisible(saveChiefComplaint));
 
         handleDuplicateAlert();
 
@@ -111,36 +103,68 @@ public class HComplaintOcularPage extends BasePage {
     }
 
     // =============================
-    // ADD OCULAR HISTORY
+    // OCULAR HISTORY
     // =============================
-    public void addOcularHistory() {
+   public void addOcularHistory() {
 
-        waitUntilModalGone();
+    System.out.println("Step 1 : Ocular History");
 
-        selectFromDropdown(ocularHistoryField, "Conjunctivitis");
+    selectFromDropdown(ocularHistoryField, "CATARACT");
 
-        WebElement radio = waitUntilModalGoneAndVisible(ocularEyeRE);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
+    System.out.println("Step 2 : Eye Selection");
 
-        selectFromDropdown(previousTreatment, "Glasses");
+    safeClick(waitVisible(ocularEyeRE));
 
-        WebElement remarks = waitUntilModalGoneAndVisible(remarksField);
-        remarks.clear();
-        remarks.sendKeys("No major issue");
+    System.out.println("Step 3 : Previous Treatment");
 
-        WebElement save = wait.until(ExpectedConditions.elementToBeClickable(saveOcularHistory));
+    selectFromDropdown(previousTreatment, "GLASSES");
 
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", save);
+    System.out.println("Step 4 : Remarks");
 
-        try {
-            save.click();
-        } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", save);
-        }
+    WebElement remarks = waitVisible(remarksField);
+    remarks.clear();
+    remarks.sendKeys("No major issue");
 
-        handleDuplicateAlert();
+    System.out.println("Step 5 : Save");
 
-        waitUntilModalGone();
+    WebElement save =
+            wait.until(ExpectedConditions.elementToBeClickable(saveOcularHistory));
+
+    safeClick(save);
+}
+
+    // =============================
+    // DROPDOWN HANDLER
+    // =============================
+    private void selectFromDropdown(By inputLocator, String value) {
+
+        WebElement input = waitVisible(inputLocator);
+
+        input.click();
+        input.clear();
+        input.sendKeys(value);
+
+        By suggestionList =
+                By.xpath("//ul[contains(@class,'suggestions-list')]");
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(suggestionList));
+
+        By option = By.xpath(
+                "//li[contains(@class,'suggestion-item') and contains(normalize-space(),'"
+                        + value + "')]");
+
+        WebElement item =
+                wait.until(ExpectedConditions.elementToBeClickable(option));
+
+        safeClick(item);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('change',{bubbles:true}));",
+                input);
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('blur',{bubbles:true}));",
+                input);
     }
 
     // =============================
@@ -149,43 +173,48 @@ public class HComplaintOcularPage extends BasePage {
     private void handleDuplicateAlert() {
 
         try {
-            WebElement alert = wait.until(ExpectedConditions.visibilityOfElementLocated(duplicateAlertMsg));
+
+            WebElement alert =
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(duplicateAlertMsg));
 
             if (alert.isDisplayed()) {
 
-                WebElement okBtn = wait.until(ExpectedConditions.elementToBeClickable(duplicateAlertOkBtn));
+                WebElement okButton =
+                        wait.until(ExpectedConditions.elementToBeClickable(duplicateAlertOkBtn));
 
-                try {
-                    okBtn.click();
-                } catch (Exception e) {
-                    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", okBtn);
-                }
+                safeClick(okButton);
 
                 wait.until(ExpectedConditions.invisibilityOf(alert));
             }
 
-        } catch (Exception e) {
-            // no alert आया तो ignore
+        } catch (TimeoutException ignored) {
+            // Alert not displayed
         }
     }
 
     // =============================
     // COMMON METHODS
     // =============================
-    private WebElement waitUntilModalGoneAndVisible(By locator) {
+    private WebElement waitVisible(By locator) {
+
         waitUntilModalGone();
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+
+        return wait.until(
+                ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    private void clickWhenModalGone(WebElement element) {
-        for (int i = 0; i < 5; i++) {
-            try {
-                waitUntilModalGone();
-                element.click();
-                return;
-            } catch (Exception e) {
-                try { Thread.sleep(200); } catch (Exception ignored) {}
-            }
+    protected void safeClick(WebElement element) {
+
+        try {
+
+            wait.until(ExpectedConditions.elementToBeClickable(element));
+
+            element.click();
+
+        } catch (Exception e) {
+
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].click();", element);
         }
     }
 }
