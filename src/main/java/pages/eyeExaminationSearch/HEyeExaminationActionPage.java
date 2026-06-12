@@ -1,7 +1,5 @@
 package pages.eyeExaminationSearch;
 
-import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -14,190 +12,232 @@ import pages.BasePage;
 public class HEyeExaminationActionPage extends BasePage {
 
 	public HEyeExaminationActionPage(WebDriver driver) {
-		 super(driver);
-	        wait.until(ExpectedConditions.visibilityOfElementLocated(pageHeader));
-	    }
+		super(driver);
+	}
 
-	    // =============================
-	    // PAGE HEADER
-	    // =============================
+	// =============================
+	// PAGE HEADER
+	// =============================
 
-	    By pageHeader = By.xpath("//h4[.='Eye Examination']");
+	By pageHeader = By.xpath("//div[@class='sc-nav']//a[@href='/EYEHOSPITAL/EYEEXAMINATIONEH/EYEEXAMINATION']");
 
-	    // =============================
-	    // ADVANCE SEARCH
-	    // =============================
+	// =============================
+	// ADVANCE SEARCH
+	// =============================
 
-	    By advanceSearchBtn = By.xpath("//form//a[2]");
-	    By fromDate = By.name("fromDatePres");
-	    By toDate = By.name("toDatePres");
+	By advanceSearchBtn = By.id("bbssss");
+	By fromDate = By.name("fromDatePres");
+	By toDate = By.name("toDatePres");
 
-	    By searchBtn = By.xpath("//form//a[contains(text(),'Search')]");
+	By searchBtn = By.xpath("//form//a[contains(text(),'Search')]");
 
-	    // =============================
-	    // RESULT TABLE
-	    // =============================
+	// =============================
+	// RESULT TABLE
+	// =============================
 
-	    By resultRow = By.xpath("//*[@id='h-din']//tbody//tr");
+	By resultRow = By.xpath("//*[@id='h-din']//tbody//tr");
 
-	    // =============================
-	    // PLUS ICON (FIRST ROW ACTION)
-	    // =============================
+	// =============================
+	// PLUS ICON (FIRST ROW ACTION)
+	// =============================
 
-	    By plusIcon = By.xpath("//i[@data-access='Examination' and @title='Eye Examination']");
+	By plusIcon = By.xpath(
+			"(//*[@id='h-din']//tbody//tr[\" + i + \"]//i[@data-access='Examination' and @title='Eye Examination'])[2]");
 
-	    // =============================
-	    // SAFE CLICK
-	    // =============================
+	// =============================
+	// SAFE CLICK
+	// =============================
 
-	    public void safeClick(By locator) {
+	public void safeClick(By locator) {
 
-	        WebElement element = wait.until(
-	                ExpectedConditions.elementToBeClickable(locator));
+		WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", element);
+
+		try {
+			element.click();
+		} catch (Exception e) {
+
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+		}
+	}
+
+	// =============================
+	// OPEN ADVANCE SEARCH
+	// =============================
+
+	public void openAdvanceSearch() throws InterruptedException {
+
+	    WebElement btn = driver.findElement(By.id("bbssss"));
+
+	    ((JavascriptExecutor) driver)
+	            .executeScript("arguments[0].scrollIntoView(true);", btn);
+
+	    Thread.sleep(1000);
+
+	    try {
+	        btn.click();
+	    } catch (Exception e) {
 
 	        ((JavascriptExecutor) driver)
-	                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-
-	        try {
-	            element.click();
-	        } catch (Exception e) {
-
-	            ((JavascriptExecutor) driver)
-	                    .executeScript("arguments[0].click();", element);
-	        }
+	                .executeScript("arguments[0].click();", btn);
 	    }
 
-	    // =============================
-	    // OPEN ADVANCE SEARCH
-	    // =============================
+	    Thread.sleep(3000);
 
-	    public void openAdvanceSearch() {
+	    System.out.println("Advance Search Click Attempted");
+	}
 
-	        safeClick(advanceSearchBtn);
-	        wait.until(ExpectedConditions.visibilityOfElementLocated(fromDate));
-	    }
+	public void openEyeExaminationPage() {
 
-	    // =============================
-	    // SET DATE
-	    // =============================
+		WebElement menu = wait.until(ExpectedConditions.elementToBeClickable(pageHeader));
 
-	    public void setDate(String from, String to) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", menu);
 
-	        WebElement fromField = wait.until(
-	                ExpectedConditions.visibilityOfElementLocated(fromDate));
+		((JavascriptExecutor) driver).executeScript("arguments[0].click();", menu);
 
-	        fromField.clear();
-	        fromField.sendKeys(from);
+		wait.until(ExpectedConditions.urlContains("EYEEXAMINATION"));
+	}
 
-	        WebElement toField = wait.until(
-	                ExpectedConditions.visibilityOfElementLocated(toDate));
+	// =============================
+	// SET DATE
+	// =============================
 
-	        toField.clear();
-	        toField.sendKeys(to);
-	    }
+	public void setDate(String from, String to) {
 
-	    // =============================
-	    // SEARCH BY DATE
-	    // =============================
+		WebElement fromField = wait.until(ExpectedConditions.visibilityOfElementLocated(fromDate));
 
-	    public void searchByDate(String from, String to) {
+		fromField.clear();
+		fromField.sendKeys(from);
 
-	        openAdvanceSearch();
-	        setDate(from, to);
+		WebElement toField = wait.until(ExpectedConditions.visibilityOfElementLocated(toDate));
 
-	        safeClick(searchBtn);
+		toField.clear();
+		toField.sendKeys(to);
+	}
 
-	        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(resultRow, 0));
-	    }
+	// =============================
+	// SEARCH BY DATE
+	// =============================
 
-	    // =============================
-	    // CLICK FIRST ROW PLUS ICON
-	    // =============================
+	public void searchByDate(String from, String to) throws InterruptedException {
 
-	 public void clickFirstRowPlusIcon() {
+    openAdvanceSearch();
+    setDate(from, to);
+
+    // old first row reference
+    WebElement oldRow = null;
+
+    try {
+        oldRow = driver.findElement(
+                By.xpath("//*[@id='h-din']//tbody//tr[1]"));
+    } catch (Exception ignored) {
+    }
+
+    safeClick(searchBtn);
+
+    if (oldRow != null) {
+        wait.until(ExpectedConditions.stalenessOf(oldRow));
+    }
+
+    wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//*[@id='h-din']//tbody//tr[1]")));
+
+    System.out.println("✅ Search results loaded");
+}
+
+	// =============================
+	// CLICK FIRST ROW PLUS ICON
+	// =============================
+
+	public void clickFirstRowPlusIcon() {
 
     By rowsLocator = By.xpath("//*[@id='h-din']//tbody//tr");
 
-    // ✅ Wait for table rows
     wait.until(ExpectedConditions.presenceOfElementLocated(rowsLocator));
 
-    // ✅ 🔥 MOST IMPORTANT: wait for actual data (td)
-    wait.until(ExpectedConditions.presenceOfElementLocated(
-            By.xpath("//*[@id='h-din']//tbody//tr[1]//td")
-    ));
-
     int rowCount = driver.findElements(rowsLocator).size();
-    System.out.println("Total rows: " + rowCount);
+
+    System.out.println("Total Rows : " + rowCount);
 
     for (int i = 1; i <= rowCount; i++) {
 
         try {
-            // ✅ Retry mechanism (handle dynamic loading)
-            int retry = 0;
-            String status = "";
-            String patientType = "";
 
-            while (retry < 3) {
+            String patientType = driver
+                    .findElement(By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[6]"))
+                    .getText()
+                    .trim()
+                    .toLowerCase();
 
-                List<WebElement> statusEl = driver.findElements(
-                        By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[9]")
+            String status = driver
+                    .findElement(By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[9]"))
+                    .getText()
+                    .trim()
+                    .toLowerCase();
+
+            System.out.println(
+                    "Row " + i +
+                    " | Patient Type = " + patientType +
+                    " | Status = " + status);
+
+            // Skip Post-Op
+            boolean validPatient = !patientType.contains("post-op");
+
+            // Only New or In-Progress
+            boolean validStatus =
+                    status.contains("new")
+                    || status.contains("in-progress")
+                    || status.contains("in progress")
+                    || status.contains("inprogress");
+
+            if (validPatient && validStatus) {
+
+                By eyeIcon = By.xpath(
+                        "(//*[@id='h-din']//tbody//tr[" + i + "]//i[@data-access='Examination' and @title='Eye Examination'])[1]"
                 );
 
-                List<WebElement> typeEl = driver.findElements(
-                        By.xpath("//*[@id='h-din']//tbody//tr[" + i + "]//td[6]")
-                );
-
-                if (!statusEl.isEmpty() && !typeEl.isEmpty()) {
-                    status = statusEl.get(0).getText().trim().toLowerCase();
-                    patientType = typeEl.get(0).getText().trim().toLowerCase();
-                    break;
-                }
-
-                Thread.sleep(500); // ⏳ wait for data render
-                retry++;
-            }
-
-            if (status.isEmpty() || patientType.isEmpty()) {
-                System.out.println("⚠️ Skipping row " + i + " (data not loaded)");
-                continue;
-            }
-
-            System.out.println("Row " + i + " => Status: [" + status + "] | Type: [" + patientType + "]");
-
-            boolean validStatus = status.contains("in-progress") || status.contains("new");
-            boolean notPostOp = !patientType.contains("post-op");
-
-            if (validStatus && notPostOp) {
-
-                By iconLocator = By.xpath(
-                        "//*[@id='h-din']//tbody//tr[" + i + "]//i[@data-access='Examination' and @title='Eye Examination']"
-                );
-
-                WebElement icon = wait.until(ExpectedConditions.elementToBeClickable(iconLocator));
+                WebElement icon = wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(eyeIcon));
 
                 ((JavascriptExecutor) driver)
                         .executeScript("arguments[0].scrollIntoView({block:'center'});", icon);
 
+                Thread.sleep(1000);
+
                 try {
+                    wait.until(ExpectedConditions.elementToBeClickable(icon));
                     icon.click();
-                } catch (Exception e) {
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].click();", icon);
+                } catch (StaleElementReferenceException e) {
+
+                    i--; // same row retry
+
+                    continue;
                 }
 
-                System.out.println("✅ Clicked Eye Examination for row: " + i);
+                System.out.println(
+                        "✅ Eye Examination clicked successfully for Row "
+                                + i
+                                + " | Patient Type = "
+                                + patientType
+                                + " | Status = "
+                                + status);
+
                 return;
             }
 
-        } catch (StaleElementReferenceException e) {
-            System.out.println("⚠️ Retrying row " + i + " (stale)");
-            i--; // 🔥 retry same row
         } catch (Exception e) {
-            System.out.println("⚠️ Skipping row " + i + " due to: " + e.getMessage());
+
+            System.out.println(
+                    "⚠️ Skipping Row "
+                            + i
+                            + " : "
+                            + e.getMessage());
         }
     }
 
-    throw new RuntimeException("❌ No valid patient found");
+    throw new RuntimeException(
+            "❌ No valid patient found (Status = New/In-Progress and not Post-Op)");
 }
-	   
-}  
+
+}
