@@ -34,7 +34,7 @@ public class HEyeExaminationActionTest extends BaseTest{
     public void testAdvanceSearchAndClickPlus() throws InterruptedException {
 
         // SEARCH USING DATE FILTER
-        page.searchByDate("11-06-2026", "30-06-2026");
+        page.searchByDate("10-06-2026", "30-06-2026");
 
         // CLICK FIRST ROW PLUS ICON
         page.clickFirstRowPlusIcon();
