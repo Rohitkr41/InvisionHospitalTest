@@ -1,6 +1,6 @@
 package pages.eyeExaminationSearch;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -204,155 +204,147 @@ public class HEyeExaminationActionPage extends BasePage {
 
         System.out.println("✅ Search completed. Rows found = " + rowCount);
     }
+    
+    private String getCellText(WebElement row, int columnIndex) {
+        try {
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+
+            if (columnIndex >= cells.size()) {
+                return "";
+            }
+
+            return cells.get(columnIndex)
+                    .getText()
+                    .trim()
+                    .toLowerCase();
+
+        } catch (Exception e) {
+            return "";
+        }
+    }
+    
+    private boolean clickEyeExamIcon(WebElement row) {
+
+        try {
+
+            WebElement icon = row.findElement(
+                    By.xpath(".//i[@title='Eye Examination']"));
+
+            ((JavascriptExecutor) driver)
+                    .executeScript(
+                            "arguments[0].scrollIntoView({block:'center'});",
+                            icon);
+
+            wait.until(ExpectedConditions.elementToBeClickable(icon));
+
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].click();", icon);
+
+            return true;
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Icon click failed : " + e.getMessage());
+
+            return false;
+        }
+    }
 
     // =============================
     // CLICK FIRST ROW PLUS ICON
     // =============================
-   public void clickFirstRowPlusIcon() throws InterruptedException {
+   public void clickFirstRowPlusIcon() {
 
-    By rowsLocator = By.xpath("//*[@id='h-din']//tbody//tr");
-    wait.until(ExpectedConditions.presenceOfElementLocated(rowsLocator));
+    By rowsLocator = By.xpath("//*[@id='h-din']//tbody/tr");
 
-    int rowCount = driver.findElements(rowsLocator).size();
-    System.out.println("Total Rows : " + rowCount);
+    wait.until(
+            ExpectedConditions.presenceOfElementLocated(rowsLocator));
 
-    for (int i = 1; i <= rowCount; i++) {
-        String patientType = "";
-        String status      = "";
+    List<WebElement> rows =
+            driver.findElements(rowsLocator);
 
-        // ✅ FIXED: td[6] = patientType, td[9] = status (was swapped before)
-        try {
-            patientType = getTextSafely(
-                    "//*[@id='h-din']//tbody//tr[" + i + "]//td[6]",
-                    i, "patientType");
-        } catch (Exception e) {
-            System.out.println("⚠️ Skipping Row " + i
-                    + " [patientType td[6] failed]: "
-                    + e.getMessage().split("\n")[0]);
-            continue;
-        }
+    System.out.println("Total Rows : " + rows.size());
+
+    for (int i = 0; i < rows.size(); i++) {
 
         try {
-            status = getTextSafely(
-                    "//*[@id='h-din']//tbody//tr[" + i + "]//td[9]",
-                    i, "status");
-        } catch (Exception e) {
-            System.out.println("⚠️ Skipping Row " + i
-                    + " [status td[9] failed]: "
-                    + e.getMessage().split("\n")[0]);
-            continue;
-        }
 
-        System.out.println("Row " + i
-                + " | Patient Type = " + patientType
-                + " | Status = "       + status);
+            WebElement row =
+                    driver.findElements(rowsLocator).get(i);
 
-        // ✅ FIXED: not post-op check on patientType
-        boolean validPatient = !patientType.contains("post-op")
-                            && !patientType.contains("postop");
+            List<WebElement> cells =
+                    row.findElements(By.tagName("td"));
 
-        // ✅ FIXED: use equals() not contains()
-        // contains("new") would match "walk-in/new" as status — WRONG
-        // equals() ensures EXACT match only
-        boolean validStatus = status.equals("new")
-                           || status.equals("in-progress")
-                           || status.equals("in progress")
-                           || status.equals("inprogress");
+            System.out.println(
+                    "Row " + (i + 1)
+                    + " Column Count = "
+                    + cells.size());
 
-        System.out.println("   validPatient=" + validPatient
-                         + " | validStatus=" + validStatus);
+            /*
+             * Adjust these indexes based on actual table.
+             * Start by printing all columns once.
+             */
+            String patientType =
+                    getCellText(row, 5);
 
-        if (!validPatient || !validStatus) {
-            System.out.println("   ⏭️ Skipping — not a valid match");
-            continue;
-        }
+            String status =
+                    getCellText(row, 8);
 
-        // Click Eye Examination icon with retry
-        By eyeIcon = By.xpath(
-                "(//*[@id='h-din']//tbody//tr[" + i + "]"
-                + "//i[@data-access='Examination'"
-                + " and @title='Eye Examination'])[1]");
+            System.out.println(
+                    "Row " + (i + 1)
+                    + " | Patient Type = "
+                    + patientType
+                    + " | Status = "
+                    + status);
 
-        int clickAttempts = 0;
-        boolean clicked   = false;
+            boolean validPatient =
+                    !patientType.contains("post-op")
+                    && !patientType.contains("postop");
 
-        while (clickAttempts < 3 && !clicked) {
-            try {
-                WebElement icon = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(eyeIcon));
+            boolean validStatus =
+                    status.equalsIgnoreCase("new")
+                    || status.equalsIgnoreCase("in-progress")
+                    || status.equalsIgnoreCase("in progress")
+                    || status.equalsIgnoreCase("inprogress");
 
-                ((JavascriptExecutor) driver).executeScript(
-                        "arguments[0].scrollIntoView({block:'center'});", icon);
-                Thread.sleep(500);
+            if (!validPatient || !validStatus) {
 
-                icon = wait.until(
-                        ExpectedConditions.elementToBeClickable(eyeIcon));
+                System.out.println(
+                        "Skipping Row "
+                        + (i + 1));
 
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", icon);
-
-                System.out.println("✅ Eye Examination clicked successfully"
-                        + " for Row "          + i
-                        + " | Patient Type = "  + patientType
-                        + " | Status = "        + status);
-
-                clicked = true;
-                return;
-
-            } catch (StaleElementReferenceException se) {
-                clickAttempts++;
-                System.out.println("🔄 Stale on click — retry "
-                        + clickAttempts + "/3 for Row " + i);
-                Thread.sleep(400);
-
-            } catch (Exception e) {
-                System.out.println("⚠️ Click failed for Row " + i
-                        + ": " + e.getMessage().split("\n")[0]);
-                break;
+                continue;
             }
-        }
 
-        if (!clicked) {
-            System.out.println("⚠️ Could not click Row " + i
-                    + " after 3 attempts — trying next valid row");
+            if (clickEyeExamIcon(row)) {
+
+                System.out.println(
+                        "Eye Examination clicked for Row "
+                        + (i + 1));
+
+                return;
+            }
+
+        } catch (StaleElementReferenceException e) {
+
+            System.out.println(
+                    "Stale Row : "
+                    + (i + 1));
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Error in Row "
+                    + (i + 1)
+                    + " : "
+                    + e.getMessage());
         }
     }
 
     throw new RuntimeException(
-            "❌ No valid patient found (Status = New/In-Progress and not Post-Op). "
-            + "Total rows scanned: " + rowCount);
+            "No valid patient found");
 }
 
-    // =============================
-    // HELPER: read cell text safely
-    // =============================
-    private String getTextSafely(String xpath, int rowIndex, String cellName) {
-        int attempts = 0;
-
-        while (attempts < 3) {
-            try {
-                return driver
-                        .findElement(By.xpath(xpath))
-                        .getText()
-                        .trim()
-                        .toLowerCase();
-
-            } catch (StaleElementReferenceException se) {
-                attempts++;
-                System.out.println("🔄 Stale on " + cellName
-                        + " Row " + rowIndex
-                        + " — retry " + attempts + "/3");
-                try { Thread.sleep(300); } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                }
-
-            } catch (NoSuchElementException ne) {
-                throw new RuntimeException(
-                        cellName + " cell not found at: " + xpath);
-            }
-        }
-
-        throw new RuntimeException(cellName
-                + " still stale after 3 retries at row " + rowIndex);
-    }
+   
 }
