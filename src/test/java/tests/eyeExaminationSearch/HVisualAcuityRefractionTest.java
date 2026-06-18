@@ -16,7 +16,7 @@ public class HVisualAcuityRefractionTest extends BaseTest {
     private HVisualAcuityRefractionPage visualPage;
 
     @BeforeMethod
-    public void setupPage() {
+    public void setupPage() throws InterruptedException {
 
         // LOGIN
         LoginPage login = new LoginPage(driver);
@@ -34,17 +34,18 @@ public class HVisualAcuityRefractionTest extends BaseTest {
         visualPage = new HVisualAcuityRefractionPage(driver);
 
         // SEARCH PATIENT
-        actionPage.searchByDate("14-04-2026", "15-04-2026");
+        actionPage.searchByDate("15-06-2026", "30-06-2026");
 
         // OPEN PATIENT
         actionPage.clickFirstRowPlusIcon();
     }
 
     @Test
-    public void testVisualAcuityRefraction() {
+    public void testVisualAcuityRefraction() throws InterruptedException {
 
         visualPage.clickVisualAcuityMenu();
-//        visualPage.addVisualAcuity();
+        visualPage.addVisualAcuity();
+        System.out.println(driver.switchTo().activeElement().getAttribute("value"));
         visualPage.addRefraction();
     }
 }
