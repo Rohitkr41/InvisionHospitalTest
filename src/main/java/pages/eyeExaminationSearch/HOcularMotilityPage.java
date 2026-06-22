@@ -14,236 +14,194 @@ import pages.BasePage;
 
 public class HOcularMotilityPage extends BasePage {
 
-    public HOcularMotilityPage(WebDriver driver) {
-        super(driver);
-    }
+	public HOcularMotilityPage(WebDriver driver) {
+		super(driver);
+	}
 
-    // =============================
-    // LEFT MENU
-    // =============================
+	// =============================
+	// LEFT MENU
+	// =============================
 
-    By ocularMenu = By.xpath("//*[@id='side-box-nav']/li[5]");
+	By ocularMenu = By.xpath("//*[@id='side-box-nav']/li[5]");
 
-    // =============================
-    // OCULAR MOTILITY FORM
-    // =============================
+	// =============================
+	// OCULAR MOTILITY FORM
+	// =============================
 
-    private final By ocularMotilityField =
-            By.xpath("//label[contains(text(),'Ocular Motility')]/following::input[2]");
+	private final By ocularMotilityField = By.xpath("//label[contains(text(),'Ocular Motility')]/following::input[2]");
 
-    private final By movementDropdown =
-            By.xpath("//label[contains(text(),'Movement')]/following::select[1]");
+	private final By movementDropdown = By.xpath("//label[contains(text(),'Movement')]/following::select[1]");
 
-    private final By remarksField =
-            By.xpath("//label[contains(text(),'Remarks')]/following::input[1]");
+	private final By remarksField = By.xpath("//label[contains(text(),'Remarks')]/following::input[1]");
 
-    private final By saveOcularMotilityBtn =
-            By.xpath("//button[contains(text(),'Save Ocular Motility')]");
-    
- // Refraction Type Radio Buttons
-    By slitLampRadio = By.name("RM_optionsRefraction");
+	private final By saveOcularMotilityBtn = By.xpath("//button[contains(text(),'Save Ocular Motility')]");
 
-    By torchLightRadio = By.xpath("//input[@name='RM_optionsRefraction']/following-sibling::span[contains(text(),'Torchlight')]");
-    
-    // =============================
-    // EXAMINATION SECTION
-    // =============================
+	// Refraction Type Radio Buttons
+	By slitLampRadio = By.name("RM_optionsRefraction");
 
-    By setNormalValueCheckbox = By.id("flexCheckChecked");
-    By saveOcularExaminationBtn = By.xpath("(//*[@id=\"RM_btnSubmit\"])[2]");
+	By torchLightRadio = By
+			.xpath("//input[@name='RM_optionsRefraction']/following-sibling::span[contains(text(),'Torchlight')]");
 
-    // =============================
-    // ALERT
-    // =============================
+	// =============================
+	// EXAMINATION SECTION
+	// =============================
 
-    By alertMessage = By.xpath("//*[contains(text(),'Ocular Motility already exist')]");
-    By alertOkBtn = By.xpath("(//*[@id='main']//div[2]/button)[1]");
-    By modal = By.cssSelector(".custom-modal");
+	By setNormalValueCheckbox = By.id("flexCheckChecked");
+	By saveOcularExaminationBtn = By.xpath("(//*[@id=\"RM_btnSubmit\"])[2]");
 
-    // =============================
-    // CLICK OCULAR MENU
-    // =============================
+	// =============================
+	// ALERT
+	// =============================
 
-    public void clickOcularMenu() {
-        wait.until(ExpectedConditions.elementToBeClickable(ocularMenu)).click();
-    }
+	By alertMessage = By.xpath("//*[contains(text(),'Ocular Motility already exist')]");
+	By alertOkBtn = By.xpath("(//*[@id='main']//div[2]/button)[1]");
+	By modal = By.cssSelector(".custom-modal");
 
-    // =============================
-    // ADD OCULAR MOTILITY
-    // =============================
+	// =============================
+	// CLICK OCULAR MENU
+	// =============================
 
-    public void addOcularMotility() {
+	public void clickOcularMenu() {
+		wait.until(ExpectedConditions.elementToBeClickable(ocularMenu)).click();
+	}
 
-    System.out.println("Step 1 : Ocular Motility");
+	// =============================
+	// ADD OCULAR MOTILITY
+	// =============================
 
-    selectFromDropdown(ocularMotilityField, "HYPOPHORIA");
+	public void addOcularMotility() {
 
-    System.out.println("Step 2 : Movement");
+		System.out.println("Step 1 : Ocular Motility");
 
-    Select movement = new Select(
-            wait.until(ExpectedConditions.elementToBeClickable(movementDropdown)));
+		selectFromDropdown(ocularMotilityField, "HYPOPHORIA");
 
-    movement.selectByVisibleText("Full");
-    System.out.println("Step 3 : Remarks");
+		System.out.println("Step 2 : Movement");
 
-    WebElement remarks =
-            wait.until(ExpectedConditions.visibilityOfElementLocated(remarksField));
+		Select movement = new Select(wait.until(ExpectedConditions.elementToBeClickable(movementDropdown)));
 
-    remarks.clear();
-    remarks.sendKeys("Eye movement normal");
+		movement.selectByVisibleText("Full");
+		System.out.println("Step 3 : Remarks");
 
-    System.out.println("Step 4 : Save");
+		WebElement remarks = wait.until(ExpectedConditions.visibilityOfElementLocated(remarksField));
 
-    WebElement save =
-            wait.until(ExpectedConditions.elementToBeClickable(saveOcularMotilityBtn));
+		remarks.clear();
+		remarks.sendKeys("Eye movement normal");
 
-    safeClick(save);
+		System.out.println("Step 4 : Save");
 
-    handleAnyPopup();
-}
-    
-    private void selectFromDropdown(By inputLocator, String value) {
+		WebElement save = wait.until(ExpectedConditions.elementToBeClickable(saveOcularMotilityBtn));
 
-        WebElement input =
-                wait.until(ExpectedConditions.visibilityOfElementLocated(inputLocator));
+		safeClick(save);
 
-        input.click();
-        input.clear();
-        input.sendKeys(value);
+		handleAnyPopup();
+	}
 
-        By suggestionList =
-                By.xpath("//ul[contains(@class,'suggestions-list')]");
+	private void selectFromDropdown(By inputLocator, String value) {
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(suggestionList));
+		WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(inputLocator));
 
-        By option =
-                By.xpath("//li[contains(@class,'suggestion-item') and contains(normalize-space(),'"
-                        + value + "')]");
+		input.click();
+		input.clear();
+		input.sendKeys(value);
 
-        WebElement item =
-                wait.until(ExpectedConditions.elementToBeClickable(option));
+		By suggestionList = By.xpath("//ul[contains(@class,'suggestions-list')]");
 
-        safeClick(item);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(suggestionList));
 
-        ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].dispatchEvent(new Event('change',{bubbles:true}));",
-                input);
+		By option = By
+				.xpath("//li[contains(@class,'suggestion-item') and contains(normalize-space(),'" + value + "')]");
 
-        ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].dispatchEvent(new Event('blur',{bubbles:true}));",
-                input);
-    }
-    
-    public void selectRefractionType(String type) {
+		WebElement item = wait.until(ExpectedConditions.elementToBeClickable(option));
 
-        By locator;
+		safeClick(item);
 
-        if (type.equalsIgnoreCase("SlitLamp")) {
-            locator = slitLampRadio;
-        } else {
-            locator = torchLightRadio;
-        }
+		((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('change',{bubbles:true}));",
+				input);
 
-        WebElement radio =
-                wait.until(ExpectedConditions.elementToBeClickable(locator));
+		((JavascriptExecutor) driver).executeScript("arguments[0].dispatchEvent(new Event('blur',{bubbles:true}));",
+				input);
+	}
 
-        try {
-            radio.click();
-        } catch (Exception e) {
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].click();", radio);
-        }
-    }
-    
-    
-    // =============================
-    // HANDLE ALERT
-    // =============================
+	public void selectRefractionType(String type) {
 
-   private void handleAnyPopup() {
+		By locator;
 
-    try {
+		if (type.equalsIgnoreCase("SlitLamp")) {
+			locator = slitLampRadio;
+		} else {
+			locator = torchLightRadio;
+		}
 
-        // Wait for popup message
-        WebElement alertMsg = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//*[contains(text(),'Ocular Motility already exist!')]")));
+		WebElement radio = wait.until(ExpectedConditions.elementToBeClickable(locator));
 
-        System.out.println("✅ Popup Found: " + alertMsg.getText());
+		try {
+			radio.click();
+		} catch (Exception e) {
+			((JavascriptExecutor) driver).executeScript("arguments[0].click();", radio);
+		}
+	}
 
-        // Click OK button
-        WebElement okBtn = new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.elementToBeClickable(
-                        By.xpath("(//button[normalize-space()='OK' or normalize-space()='Ok'])[3]")));
+	// =============================
+	// HANDLE ALERT
+	// =============================
 
-        try {
-            okBtn.click();
-        } catch (Exception e) {
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].click();", okBtn);
-        }
+	private void handleAnyPopup() {
 
-        // Wait for popup to disappear
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.invisibilityOf(alertMsg));
+		try {
 
-        System.out.println("✅ Popup handled successfully");
+			// Wait for popup message
+			WebElement alertMsg = new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions
+					.visibilityOfElementLocated(By.xpath("//*[contains(text(),'Ocular Motility already exist!')]")));
 
-    } catch (Exception e) {
-        System.out.println("⚠️ No 'Ocular Motility already exist!' popup detected");
-    }
-}
+			System.out.println("✅ Popup Found: " + alertMsg.getText());
+
+			// Click OK button
+			WebElement okBtn = new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions
+					.elementToBeClickable(By.xpath("(//button[normalize-space()='OK' or normalize-space()='Ok'])[3]")));
+
+			try {
+				okBtn.click();
+			} catch (Exception e) {
+				((JavascriptExecutor) driver).executeScript("arguments[0].click();", okBtn);
+			}
+
+			// Wait for popup to disappear
+			new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.invisibilityOf(alertMsg));
+
+			System.out.println("✅ Popup handled successfully");
+
+		} catch (Exception e) {
+			System.out.println("⚠️ No 'Ocular Motility already exist!' popup detected");
+		}
+	}
 
 // =============================
 // CLICK SET NORMAL VALUE (with wait before click)
 // =============================
-public void clickSetNormalValue() {
-	
-	handleAnyPopup(); // ensure modal closed
+	public void clickSetNormalValue() {
 
-    // wait until label is clickable
-    WebElement label = wait.until(ExpectedConditions.elementToBeClickable(setNormalValueCheckbox));
+		handleAnyPopup(); // ensure modal closed
 
-    try {
-        label.click(); // click visible label instead of hidden input
-    } catch (Exception e) {
-        // fallback to JS click
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", label);
-    }
-}
-    // =============================
+		// wait until label is clickable
+		WebElement label = wait.until(ExpectedConditions.elementToBeClickable(setNormalValueCheckbox));
+
+		try {
+			label.click(); // click visible label instead of hidden input
+		} catch (Exception e) {
+			// fallback to JS click
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			js.executeScript("arguments[0].click();", label);
+		}
+	}
+
+	// =============================
 // SAVE OCULAR EXAMINATION (with success alert handling)
 // =============================
-public void saveOcularExamination() {
+	public void saveOcularExamination() {
 
-   
-    WebElement saveBtn = wait.until(
-            ExpectedConditions.elementToBeClickable(saveOcularExaminationBtn));
+		WebElement saveBtn = wait.until(ExpectedConditions.elementToBeClickable(saveOcularExaminationBtn));
 
-    saveBtn.click();
+		saveBtn.click();
 
-    // =============================
-    // HANDLE SUCCESS ALERT
-    // =============================
-    try {
-        // wait briefly for success alert to appear (max 3s)
-        By successAlert = By.xpath("//*[contains(text(),'Ocular Motility already exist!')]");
-        WebElement alert = new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOfElementLocated(successAlert));
-
-        if (alert.isDisplayed()) {
-            // find OK button in the modal
-            WebElement okBtn = driver.findElement(By.xpath("//*[@id=\"main\"]//div[4]//div[2]/div[2]/button"));
-            okBtn.click();
-
-            // wait for modal to disappear
-            new WebDriverWait(driver, Duration.ofSeconds(2))
-                    .until(ExpectedConditions.invisibilityOfElementLocated(modal));
-        }
-
-    } catch (Exception e) {
-        // success alert not present — skip
-    }
-}
+	}
 }
