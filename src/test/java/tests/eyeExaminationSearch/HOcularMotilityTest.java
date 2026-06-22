@@ -16,7 +16,7 @@ public class HOcularMotilityTest extends BaseTest {
     private HOcularMotilityPage ocularPage;
 
     @BeforeMethod
-    public void setupPage() {
+    public void setupPage() throws InterruptedException {
 
         // LOGIN
         LoginPage login = new LoginPage(driver);
@@ -34,7 +34,7 @@ public class HOcularMotilityTest extends BaseTest {
         ocularPage = new HOcularMotilityPage(driver);
 
         // SEARCH PATIENT
-        actionPage.searchByDate("08-04-2026", "24-04-2026");
+        actionPage.searchByDate("22-06-2026", "30-06-2026");
         actionPage.clickFirstRowPlusIcon();
     }
 
@@ -43,7 +43,7 @@ public class HOcularMotilityTest extends BaseTest {
 
     	ocularPage.clickOcularMenu();
     	ocularPage.addOcularMotility();
-    	ocularPage.clickExaminationRadioBtn();
+    	ocularPage.selectRefractionType("SlitLamp"); // ya "Torchlight"
     	ocularPage.clickSetNormalValue();
     	ocularPage.saveOcularExamination();
     }
