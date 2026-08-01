@@ -24,7 +24,8 @@ public class SidebarPage {
     // LOCATORS
     // ======================
 
-    private By hospitalMenu = By.xpath("//span[contains(text(),'Hospital')]");
+//    private By hospitalMenu = By.xpath("//span[contains(text(),'Hospital')]");
+    private By hospitalMenu = By.xpath("(//span[contains(text(),'Hospital')])[2]");
     
     private By CommunityClinicMenu = By.xpath("//span[contains(text(),'Community Clinic')]");
     private By registrationMenu = By.xpath("//span[normalize-space()='Registration']");
