@@ -42,7 +42,7 @@ public class HHistoryTest extends BaseTest {
         // =============================
         // SEARCH PATIENT AND OPEN FIRST ROW
         // =============================
-        actionPage.searchByDate("08-04-2026", "24-04-2026");
+        actionPage.searchByDate("01-08-2026", "24-09-2026");
         actionPage.clickFirstRowPlusIcon();
     }
 
