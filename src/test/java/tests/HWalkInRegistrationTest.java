@@ -28,7 +28,7 @@ public class HWalkInRegistrationTest extends BaseTest {
 
 		);
 
-		int registrationCount = 2;
+		int registrationCount = 5;
 
 		for (int i = 1; i <= registrationCount; i++) {
 
