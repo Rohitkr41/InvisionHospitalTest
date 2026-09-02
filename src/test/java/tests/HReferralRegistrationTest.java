@@ -36,7 +36,7 @@ public class HReferralRegistrationTest extends BaseTest {
         referral.selectSurvey();   // OR referral.selectCommunityClinic()
 
 //        referral.enterPatientFirstName("Rohit");
-        referral.enterMemberNumber("228-14-10-08");
+        referral.enterMemberNumber("228-14-10-10");
 //        referral.enterPhoneNumber("9876543210");
 
         referral.clickSearch();
@@ -45,7 +45,7 @@ public class HReferralRegistrationTest extends BaseTest {
         
         referral.clickDiscountCheckbox();
 
-        referral.enterDiscountAmount("10");
+        referral.enterDiscountAmount("15");
 
         referral.selectDiscountRemark("Poor Patient");
 
