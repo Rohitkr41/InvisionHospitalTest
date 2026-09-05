@@ -39,7 +39,7 @@ public class HEyeExaminationSearchTest extends BaseTest{
 	    @Test
 	    public void topSearchByRegistration() {
 
-	        page.searchByRegistration("IH-IVC-26-0391");
+	        page.searchByRegistration("IH-IVC-26-0312");
 	        page.clickTopSearch();
 
 	        Assert.assertTrue(page.isResultDisplayed(),
