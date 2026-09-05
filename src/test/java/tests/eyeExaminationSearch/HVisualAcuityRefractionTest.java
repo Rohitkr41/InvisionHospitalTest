@@ -34,7 +34,7 @@ public class HVisualAcuityRefractionTest extends BaseTest {
         visualPage = new HVisualAcuityRefractionPage(driver);
 
         // SEARCH PATIENT
-        actionPage.searchByDate("15-06-2026", "30-06-2026");
+        actionPage.searchByDate("15-09-2026", "30-10-2026");
 
         // OPEN PATIENT
         actionPage.clickFirstRowPlusIcon();
