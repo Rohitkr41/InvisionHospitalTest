@@ -42,7 +42,7 @@ public class HFollowUpRegistrationTest extends BaseTest{
         followup.clickYes();
 
         followup.clickDiscountCheckbox();
-        followup.enterDiscountAmount("5");
+        followup.enterDiscountAmount("6");
 
         followup.selectDiscountRemark("Poor Patient");
 
