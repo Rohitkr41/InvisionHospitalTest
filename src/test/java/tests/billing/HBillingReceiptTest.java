@@ -55,7 +55,7 @@ public class HBillingReceiptTest extends BaseTest {
 //    @Test
     public void searchByPhoneNumber() {
 
-        page.searchByPhone("734986743969834");
+        page.searchByPhone("7349867439698456");
         page.clickTopSearch();
 
         boolean result = page.isResultDisplayed();
