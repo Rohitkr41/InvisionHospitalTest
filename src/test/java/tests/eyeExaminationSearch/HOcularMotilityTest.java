@@ -34,7 +34,7 @@ public class HOcularMotilityTest extends BaseTest {
         ocularPage = new HOcularMotilityPage(driver);
 
         // SEARCH PATIENT
-        actionPage.searchByDate("22-06-2026", "30-06-2026");
+        actionPage.searchByDate("01-09-2026", "30-10-2026");
         actionPage.clickFirstRowPlusIcon();
     }
 
