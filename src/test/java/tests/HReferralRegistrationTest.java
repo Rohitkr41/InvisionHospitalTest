@@ -51,7 +51,7 @@ public class HReferralRegistrationTest extends BaseTest {
 
         referral.selectMode("UPI");
 
-        referral.enterTransactionId("TXN123456");
+        referral.enterTransactionId("TXN12345645");
         
 //        referral.clickRegisterPatient();
 
