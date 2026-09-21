@@ -114,7 +114,7 @@ public class HReferralRegistrationPage extends BasePage{
 	            }
 	        }
 
-	        throw new RuntimeException("Discount Remark not found: " + remark);
+	        throw new RuntimeException("Discount Remark not founded: " + remark);
 	    }
 
 	    // Select Mode
